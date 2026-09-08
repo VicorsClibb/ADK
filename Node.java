@@ -1,6 +1,9 @@
 public class Node{
 
-    private int height = 1; //potential bug
+    private int height = 1; 
+    //potential bug. Larger problem: Height is being mutated, not persistent. 
+    // Möjligen skapa en tree class som har nod och height fält
+    // som man kan skapa nya versioner av? 
     private final int value;
     private final Node left, right;
     private final int none = 0;
@@ -34,7 +37,10 @@ public class Node{
         }
 
         int amountOfBits = height - 1; //antalet bitar för att representera samtliga index-platser i listan
-        int msb = 2^(amountOfBits); // _ _ _ -> 1 0 0 = 4 (exempel med 3 bitar) -> 2^(3-1)=4
+        //int msb = 2^(amountOfBits); // _ _ _ -> 1 0 0 = 4 (exempel med 3 bitar) -> 2^(3-1)=4
+        int msb = 1 << (height - 1); // msb som kan skickas med rekursivt så den fortsätter shifta
+        //1 << (3 - 1) -> 1 << 2 -> 1 0 0
+
 
         if((i & msb) == 0){
 
