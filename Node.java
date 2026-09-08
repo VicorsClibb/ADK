@@ -2,6 +2,7 @@ public class Node{
 
     private final int value;
     private final Node left, right;
+    private final int none = 0;
     //final för att upprätthålla beständighet (immutability)
 
     //konstruktor
@@ -11,8 +12,14 @@ public class Node{
         this.right = right;
     }
 
-    public void set(Node a, int i, int value){
+    Node newarray(){
+        return new Node(none, null, null);
+    }
 
+    void set(Node a, int i, int value){
+
+        Node copyReference = a;
+        
         
     }
 
