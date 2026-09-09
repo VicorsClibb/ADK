@@ -53,8 +53,8 @@ public class persistentArray {
         }
 
         //this.height är fortfarande 1 för att det är immutable
-        Node newRoot = setRecursive(currentRoot, i, value, this.height);
-
+        Node newRoot = setRecursive(currentRoot, i, value, newHeight);
+        
         return new persistentArray(newHeight, newRoot);
 
 
