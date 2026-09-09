@@ -19,6 +19,13 @@ public class PersistentArray {
     }
 
 
+    //Exemepel körning:
+    //newarray()
+    //vi har nu height = 1, rootNode = null
+    //vi kallar set(a, 5, 10) : set värde av index till 10.     //Exemepel körning:
+    //newarray()
+    //vi har nu height = 1, rootNode = null
+    //vi kallar set(a, 5, 10) : set värde av index till 10. 
     PersistentArray set(Node a, int i, int value){
 
         if(i < 0){
@@ -26,22 +33,38 @@ public class PersistentArray {
         }
 
         int neededBits = 32 - Integer.numberOfLeadingZeros(i);
+        //5 = 101 (binärt) => neededBits = 3
+
         Node currentRoot = this.rootNode;
+        // = null
+
         int currentHeight = this.height;
+        // = 1
+
         int currentAmountBits = 1 << (currentHeight-1); //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
+        // 1 << 0 = 1
+
+
         int newHeight = currentHeight;
+        // = 1
+
 
         while (neededBits > currentAmountBits) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
+        //3 > 1 => True
+
             Node newRoot = new Node(-1, currentRoot, null);
             currentRoot = newRoot;
 
             newHeight++;
-            int maxIndex = 1 << (height-1);
+            //newHeight 1 => 2
+            int maxIndex = 1 << (newHeight-1);
+            //height <=> this.height? => maxIndex = 1 << 1-1 = 1
             currentAmountBits = maxIndex-1;
+            // = 0. Error right?
         }
 
-
-        Node newRoot = setRecursive(currentRoot, i, value, this.height);
+        //this.height är fortfarande 1 för att det är immutable
+        Node newRoot = setRecursive(currentRoot, i, value, newHeight);
 
         return new PersistentArray(newHeight, newRoot);
 
