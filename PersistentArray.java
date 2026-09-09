@@ -69,6 +69,12 @@ public class PersistentArray {
 
 
     }
+
+    private int fetchChild(Node n) {
+
+        return (n == null) ? -1 : n.value;
+    }
+
     private Node setRecursive(Node current, int i, int value, int localHeight){
 
         //basfall
@@ -76,9 +82,11 @@ public class PersistentArray {
             return new Node(value, null, null);
         }
 
-        int currentAmountBits = localHeight -1;
+        int currentAmountBits = localHeight - 1;
+        
         Node currentLeft;
         Node currentRight;
+
         if(current != null){
              currentLeft = current.left;
              currentRight = current.right;
@@ -89,15 +97,21 @@ public class PersistentArray {
     
 
         if(((i >> currentAmountBits) & 1) == 0){
-
+            
             Node newLeft = setRecursive(currentLeft, i, value, localHeight-1);
-            return new Node(-1, newLeft, currentRight);
+
+            int maxInSubTree = Math.max(fetchChild(newLeft), fetchChild(currentRight));
+
+            return new Node(maxInSubTree, newLeft, currentRight);
 
             
         }else{
 
             Node newRight = setRecursive(currentRight, i, value, localHeight-1);
-            return new Node(-1, currentLeft, newRight);
+
+            int maxInSubTree = Math.max(fetchChild(newRight), fetchChild(currentLeft));
+
+            return new Node(maxInSubTree, currentLeft, newRight);
 
         }
     }
