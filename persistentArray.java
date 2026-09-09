@@ -1,19 +1,16 @@
 public class persistentArray {
 
     private final int height; //maxSize = 2^(height-1), log(maxSize) = height-1
-    private final int currentAmountBits;
     private final Node rootNode;
 
     public persistentArray(){
         this.height = 1; //löv har höjd 1
-        this.currentAmountBits = 1;
         this.rootNode = null;
     }
 
-    private persistentArray(int height, int currentAmountBits, Node rooNode){//hålla persistens, genom denna konstruktor skapa nya objekt baserade på tidigare attribut.
+    private persistentArray(int height, Node rootNode){//hålla persistens, genom denna konstruktor skapa nya objekt baserade på tidigare attribut.
         this.height=height;
-        this.currentAmountBits=currentAmountBits;
-        this.rootNode=rooNode;
+        this.rootNode=rootNode;
     }
 
      persistentArray newarray(){
@@ -22,53 +19,56 @@ public class persistentArray {
     }
 
 
-    void set(Node a, int i, int value){
+    persistentArray set(Node a, int i, int value){
 
         int neededBits = 32 - Integer.numberOfLeadingZeros(i);
         Node currentRoot = this.rootNode;
         int currentHeight = this.height;
+        int currentAmountBits = 1 << (currentHeight-1); //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
+        int newHeight = currentHeight;
 
-        int maxSize = 1 << (height-1); //(alltid potens 2) maxSize-1 ger då index.
-        this.currentAmountBits = maxSize -1;
-
-        while (neededBits > currentAmountBits) { //Fixar så att om index bit.rep > curr.amount justerar genom att öka trädet.
-            Node newRoot = new Node(-1);
-            newRoot.left = currentRoot;
+        while (neededBits > currentAmountBits) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
+            Node newRoot = new Node(-1, currentRoot, null);
             currentRoot = newRoot;
 
-            currentHeight++;
-            
-
-           
-
+            newHeight++;
+            int maxIndex = 1 << (height-1);
+            currentAmountBits = maxIndex-1;
         }
 
 
+        Node newRoot = setRecursive(currentRoot, i, value, this.height);
 
+        return new persistentArray(newHeight, newRoot);
+
+
+
+    }
+    Node setRecursive(Node current, int i, int value, int localHeight){
+
+        //basfall
+        if(localHeight < 1){ //orkar inte tänka, antingen är löv-nivån 0 eller 1, utifrån min tanke nu får det vara 1 som löv och < 1 -> vet att vi är på ett löv.
+            return new Node(value, null, null)
+        }
+
+        int currentAmountBits = localHeight;
         
-        System.out.println(neededBits);
 
-        if(neededBits > (height-1)){
-            height += neededBits - (height - 1);
+
+        if(((i >> currentAmountBits) & 1) == 0){
+
+            if(copy.left == null){
+                copy.left = new Node(-1);
+
+            }copy.left = setRecursive(copy.left, i, value, localHeight-1);
+
+        }else{
+
+            if(copy.right == null){
+                copy.right = new Node(-1);
+
+            }setRecursive(copy.right, i, value, localHeight-1);
         }
-
-        int amountOfBits = height - 1; //antalet bitar för att representera samtliga index-platser i listan
-        //int msb = 2^(amountOfBits); // _ _ _ -> 1 0 0 = 4 (exempel med 3 bitar) -> 2^(3-1)=4
-        int msb = 1 << (height - 1); // msb som kan skickas med rekursivt så den fortsätter shifta
-        //1 << (3 - 1) -> 1 << 2 -> 1 0 0
-
-
-        if((i & msb) == 0){
-
-            set(copyReference.left, i, value);
-
-        }
-
-
-
-
-        if(i & (2^(height -1) == ))
-
-        
     }
 }
+

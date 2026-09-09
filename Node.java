@@ -10,10 +10,15 @@ public class Node{
     //final för att upprätthålla beständighet (immutability)
 
     //konstruktor för löv
-    Node(int value){
+    Node(int value, Node left, Node right){
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.left = left;
+        this.right = right;
+    }
+    Node(Node old){
+        this.value = old.value;
+        this.left = old.left;
+        this.right = old.right;
     }
 
 
