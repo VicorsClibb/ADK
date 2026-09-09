@@ -52,22 +52,29 @@ public class persistentArray {
         }
 
         int currentAmountBits = localHeight;
-        
 
+        Node currentLeft;
+        Node currentRight;
+        if(current != null){
+             currentLeft = current.left;
+             currentRight = current.right;
+
+        }else{
+            currentLeft = null;
+            currentRight = null;}
+    
 
         if(((i >> currentAmountBits) & 1) == 0){
 
-            if(copy.left == null){
-                copy.left = new Node(-1);
+            Node newLeft = setRecursive(currentLeft, i, value, localHeight-1);
+            return new Node(value, newLeft, currentRight);
 
-            }copy.left = setRecursive(copy.left, i, value, localHeight-1);
-
+            
         }else{
 
-            if(copy.right == null){
-                copy.right = new Node(-1);
+            Node newRight = setRecursive(currentRight, i, value, localHeight-1);
+            return new Node(value, currentLeft, newRight);
 
-            }setRecursive(copy.right, i, value, localHeight-1);
         }
     }
 }
