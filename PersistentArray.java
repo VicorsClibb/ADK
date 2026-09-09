@@ -13,7 +13,7 @@ public class PersistentArray {
         this.rootNode=rootNode;
     }
 
-     PersistentArray newarray(){
+     PersistentArray newArray(){
 
         return new PersistentArray();
     }
@@ -145,10 +145,24 @@ public class PersistentArray {
         
     }
 
+    
 
 
-    static void main(String[] args){
-        //PersistentArray test = new PersistentArray();
+
+    public static void main(String[] args){
+        PersistentArray test = new PersistentArray();
+
+        Node rootV0 = null;
+        PersistentArray arr1 = test.set(rootV0, 2, 67);
+        PersistentArray arr2 = arr1.set(arr1.rootNode, 0, 42);
+        System.out.println(arr2.get(arr2, 0)); // should give 42
+        PersistentArray arr3 = arr2.set(arr2.rootNode, 0, 13);
+
+
+        System.out.println(arr1.get(arr1, 2)); // 67
+        System.out.println(arr2.get(arr2, 0)); // 42
+        System.out.println(arr3.get(arr3, 0)); // 13
+
 
 
         
