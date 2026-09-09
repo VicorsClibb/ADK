@@ -1,3 +1,5 @@
+import java.security.InvalidAlgorithmParameterException;
+
 public class PersistentArray {
 
     private final int height; //maxSize = 2^(height-1), log(maxSize) = height-1
@@ -145,6 +147,57 @@ public class PersistentArray {
         
     }
 
+
+
+
+    private int maxininterval(PersistentArray current, int left, int right){
+
+        if(left < 0 || right < 0 || left > right){
+             throw new IllegalArgumentException("interval not valid");
+        }
+
+        return maxsegment(current.rootNode, left, right, current.height);
+
+    }
+
+    private int maxsegment(Node current, int left, int right, int height){ //height = level
+
+        //Case A 
+        if(current == null){return -1;}
+
+        //Case B 
+        if(height < 1){return current.value;}
+
+        //Case C 
+        int currentAmountBits = height -1;
+        int leftBit = ((left >> currentAmountBits) & 1);
+        int rightBit = ((right >> currentAmountBits) & 1);
+
+        if(leftBit == 0 && rightBit == 0){
+            Node leftChild = current.left;
+            return maxsegment(leftChild, left, right, height-1);
+        }
+
+        //Case D 
+        if(leftBit == 1 && rightBit == 1){
+            Node rightChild = current.right;
+            return maxsegment(rightChild, left, right, height-1);
+        }
+
+        //Case E 
+        if(leftBit == 0 && rightBit == 1){
+            Math.max(maxrightsegment(current.left), maxleftsegment(current.right));
+        }
+    }
+
+    private int maxrightsegment(Node leftChild){
+
+        
+    }
+    private int maxleftsegment(Node leftChild){
+
+
+    }
     
 
 
