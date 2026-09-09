@@ -123,7 +123,7 @@ public class PersistentArray {
         if(i < 0){
             throw new IndexOutOfBoundsException();
         }
-        if(current.rootNode == null)return 0;
+        if(current.rootNode == null) return 0;
 
         return getHelpFunc(current.rootNode, i, current.height);
 
@@ -140,10 +140,12 @@ public class PersistentArray {
         int bit = ((i >> currentAmountBits) & 1);
 
         if(bit == 0){
-            return getHelpFunc(current.left, i, treeHeight - 1);
+
+            return (current.left == null) ? 0 : getHelpFunc(current.left, i, treeHeight - 1);
+
         }
 
-        return getHelpFunc(current.right, i, treeHeight - 1);
+        return (current.right == null) ? 0 : getHelpFunc(current.right, i, treeHeight - 1);
         
     }
 
@@ -206,19 +208,57 @@ public class PersistentArray {
         PersistentArray test = new PersistentArray();
 
         Node rootV0 = null;
-        PersistentArray arr1 = test.set(rootV0, 2, 67);
-        PersistentArray arr2 = arr1.set(arr1.rootNode, 0, 42);
-        System.out.println(arr2.get(arr2, 0)); // should give 42
-        PersistentArray arr3 = arr2.set(arr2.rootNode, 0, 13);
+
+        PersistentArray arr1 = test.set(rootV0, 0, 67);
+        System.out.println(arr1.rootNode.value + " // should give 67 , set sen hämta rotvärdet"); 
 
 
-        System.out.println(arr1.get(arr1, 2)); // 67
-        System.out.println(arr2.get(arr2, 0)); // 42
-        System.out.println(arr3.get(arr3, 0)); // 13
+        PersistentArray arr2 = arr1.set(arr1.rootNode, 1, 42);
+        System.out.println(arr2.get(arr2, 1) + " // should give 42, set sen get på nya indexet"); 
+
+        PersistentArray arr2x = arr1.set(arr1.rootNode, 1, 45);
+        System.out.println(arr2x.get(arr2x, 1) + " // should give 45, uppdaterar värde på samma index korrekt"); 
 
 
+        PersistentArray arr3 = arr2.set(arr2.rootNode, 2, 13);
+
+        PersistentArray arr4 = arr3.set(arr2.rootNode, 3, 100);
+        System.out.println(arr4.rootNode.value + " // should give 100, max updaterar med högre värde insatt"); 
+
+        PersistentArray arr5 = arr4.set(arr3.rootNode, 4, 150);
+        //System.out.println(arr5.rootNode.value + " // should give 150"); 
+
+        PersistentArray arr6 = arr5.set(arr4.rootNode, 5, 200);
+        System.out.println(arr6.rootNode.value + " // should give 200, max updaterar med högre värde insatt"); 
+        
+
+        PersistentArray arr7 = arr6.set(arr5.rootNode, 6, 2);
+        System.out.println(arr7.rootNode.value + " // should give 200, max sänks inte av inmatning av lägre värde på annan index"); 
+
+        PersistentArray arr8 = arr7.set(arr6.rootNode, 5, 2);
+        System.out.println(arr8.rootNode.value + " // should give 150, skriva över index med högsta (200) uppdaterar korrekt"); 
 
         
+
+        System.out.println(arr4.rootNode.value + " // should give 100, arr4 har fortfarande samma max, dvs persistence håller"); 
+
+        PersistentArray arr9 = arr8.set(arr7.rootNode, 20, 250);
+        System.out.println(arr9.rootNode.value + " // should give 250, träd måste växa i storlek uppdaterar max korrekt"); 
+
+        PersistentArray arr10 = arr9.set(arr8.rootNode, 0, 350);
+        System.out.println(arr10.rootNode.value + " // should give 350, uppdaterar lägre index med nytt max värde"); 
+
+        //PersistentArray arr11 = arr10.set(arr9.rootNode, -1, 350); //Index out of bound exception
+        //System.out.println(arr11.rootNode.value + " // should give 350"); 
+
+
+
+        PersistentArray arr11 = arr10.set(arr9.rootNode, 21, 0);
+        System.out.println(arr11.rootNode.value + " // should give 350, man kan sätta ett värde till 0");
+
+        PersistentArray arr12 = arr11.set(arr10.rootNode, 11, 500);
+        System.out.println(arr12.rootNode.value + " // should give 500, max uppdaterar korrekt med uppdatering av ett index som var tomt innan men inte max index");
+
     }
 }
 
