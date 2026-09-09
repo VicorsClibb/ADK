@@ -46,7 +46,7 @@ public class persistentArray {
             newHeight++;
             //newHeight 1 => 2
 
-            int maxIndex = 1 << (height-1);
+            int maxIndex = 1 << (newHeight-1);
             //height <=> this.height? => maxIndex = 1 << 1-1 = 1
             currentAmountBits = maxIndex-1;
             // = 0. Error right?
