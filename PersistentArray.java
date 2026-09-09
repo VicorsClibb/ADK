@@ -64,9 +64,9 @@ public class PersistentArray {
         }
 
         //this.height är fortfarande 1 för att det är immutable
-        Node newRoot = setRecursive(currentRoot, i, value, newHeight);
+        Node finalRoot = setRecursive(currentRoot, i, value, newHeight);
 
-        return new PersistentArray(newHeight, newRoot);
+        return new PersistentArray(newHeight, finalRoot);
 
 
 
@@ -103,6 +103,20 @@ public class PersistentArray {
             return new Node(value, currentLeft, newRight);
 
         }
+    }
+
+    int get(Node current, int i){
+        
+        if(i < 0){
+            throw new IndexOutOfBoundsException();
+        }
+
+        
+
+
+
+
+        return 0;
     }
 
 
