@@ -44,10 +44,8 @@ public class PersistentArray {
         int currentAmountBits = 1 << (currentHeight-1); //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
         // 1 << 0 = 1
 
-
         int newHeight = currentHeight;
         // = 1
-
 
         while (neededBits > currentAmountBits) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
         //3 > 1 => True
@@ -78,8 +76,7 @@ public class PersistentArray {
             return new Node(value, null, null);
         }
 
-        int currentAmountBits = localHeight;
-
+        int currentAmountBits = localHeight -1;
         Node currentLeft;
         Node currentRight;
         if(current != null){
@@ -94,29 +91,41 @@ public class PersistentArray {
         if(((i >> currentAmountBits) & 1) == 0){
 
             Node newLeft = setRecursive(currentLeft, i, value, localHeight-1);
-            return new Node(value, newLeft, currentRight);
+            return new Node(-1, newLeft, currentRight);
 
             
         }else{
 
             Node newRight = setRecursive(currentRight, i, value, localHeight-1);
-            return new Node(value, currentLeft, newRight);
+            return new Node(-1, currentLeft, newRight);
 
         }
     }
 
-    int get(Node current, int i){
+    int get(PersistentArray current, int i){
         
         if(i < 0){
             throw new IndexOutOfBoundsException();
         }
+        if(current.rootNode == null)return 0;
+
+        return getHelpFunc(current.rootNode, i, current.height);
+
+    }
+
+    int getHelpFunc(Node current, int i, int treeHeight){
+
+        if(current.value != -1){
+            int leafValue = current.value;
+            return leafValue;
+        }
+
+        int bitAmount = 1 << (treeHeight - 1);
+        int bit = (bitAmount)
+
 
         
-
-
-
-
-        return 0;
+        
     }
 
 
