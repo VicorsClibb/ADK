@@ -52,7 +52,7 @@ public class PersistentArray {
 
         //basfall
         if(localHeight < 1){ //orkar inte tänka, antingen är löv-nivån 0 eller 1, utifrån min tanke nu får det vara 1 som löv och < 1 -> vet att vi är på ett löv.
-            return new Node(value, null, null)
+            return new Node(value, null, null);
         }
 
         int currentAmountBits = localHeight;
@@ -82,7 +82,11 @@ public class PersistentArray {
         }
     }
 
+
+
     static void main(String[] args){
+        //PersistentArray test = new PersistentArray();
+
 
         
     }
