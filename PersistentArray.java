@@ -115,16 +115,19 @@ public class PersistentArray {
 
     int getHelpFunc(Node current, int i, int treeHeight){
 
-        if(current.value != -1){
+        if(treeHeight < 1){
             int leafValue = current.value;
             return leafValue;
         }
 
-        int bitAmount = 1 << (treeHeight - 1);
-        int bit = (bitAmount)
+        int currentAmountBits = treeHeight - 1;
+        int bit = ((i >> currentAmountBits) & 1);
 
+        if(bit == 0){
+            return getHelpFunc(current.left, i, treeHeight - 1);
+        }
 
-        
+        return getHelpFunc(current.right, i, treeHeight - 1);
         
     }
 
