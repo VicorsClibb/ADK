@@ -1,25 +1,25 @@
-public class persistentArray {
+public class PersistentArray {
 
     private final int height; //maxSize = 2^(height-1), log(maxSize) = height-1
     private final Node rootNode;
 
-    public persistentArray(){
+    public PersistentArray(){
         this.height = 1; //löv har höjd 1
         this.rootNode = null;
     }
 
-    private persistentArray(int height, Node rootNode){//hålla persistens, genom denna konstruktor skapa nya objekt baserade på tidigare attribut.
+    private PersistentArray(int height, Node rootNode){//hålla persistens, genom denna konstruktor skapa nya objekt baserade på tidigare attribut.
         this.height=height;
         this.rootNode=rootNode;
     }
 
-     persistentArray newarray(){
+     PersistentArray newarray(){
 
-        return new persistentArray();
+        return new PersistentArray();
     }
 
 
-    persistentArray set(Node a, int i, int value){
+    PersistentArray set(Node a, int i, int value){
 
         if(i < 0){
             throw new IndexOutOfBoundsException();
@@ -43,7 +43,7 @@ public class persistentArray {
 
         Node newRoot = setRecursive(currentRoot, i, value, this.height);
 
-        return new persistentArray(newHeight, newRoot);
+        return new PersistentArray(newHeight, newRoot);
 
 
 
