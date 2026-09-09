@@ -9,8 +9,8 @@ public class persistentArray {
     }
 
     private persistentArray(int height, Node rootNode){//hålla persistens, genom denna konstruktor skapa nya objekt baserade på tidigare attribut.
-        this.height=height;
-        this.rootNode=rootNode;
+        this.height = height;
+        this.rootNode = rootNode;
     }
 
      persistentArray newarray(){
@@ -18,25 +18,41 @@ public class persistentArray {
         return new persistentArray();
     }
 
-
+    //Exemepel körning:
+    //newarray()
+    //vi har nu height = 1, rootNode = null
+    //vi kallar set(a, 5, 10) : set värde av index till 10. 
     persistentArray set(Node a, int i, int value){
 
-        int neededBits = 32 - Integer.numberOfLeadingZeros(i);
+        int neededBits = 32 - Integer.numberOfLeadingZeros(i); 
+        //5 = 101 (binärt) => neededBits = 3
+
         Node currentRoot = this.rootNode;
+        // = null
         int currentHeight = this.height;
+        // = 1
+
         int currentAmountBits = 1 << (currentHeight-1); //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
+        // 1 << 0 = 1
         int newHeight = currentHeight;
+        // = 1
 
         while (neededBits > currentAmountBits) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
-            Node newRoot = new Node(-1, currentRoot, null);
+        //3 > 1 => True
+            Node newRoot = new Node(-1, currentRoot, null);// varför -1 här?
+            //
             currentRoot = newRoot;
 
             newHeight++;
+            //newHeight 1 => 2
+
             int maxIndex = 1 << (height-1);
+            //height <=> this.height? => maxIndex = 1 << 1-1 = 1
             currentAmountBits = maxIndex-1;
+            // = 0. Error right?
         }
 
-
+        //this.height är fortfarande 1 för att det är immutable
         Node newRoot = setRecursive(currentRoot, i, value, this.height);
 
         return new persistentArray(newHeight, newRoot);
@@ -48,7 +64,7 @@ public class persistentArray {
 
         //basfall
         if(localHeight < 1){ //orkar inte tänka, antingen är löv-nivån 0 eller 1, utifrån min tanke nu får det vara 1 som löv och < 1 -> vet att vi är på ett löv.
-            return new Node(value, null, null)
+            return new Node(value, null, null);
         }
 
         int currentAmountBits = localHeight;

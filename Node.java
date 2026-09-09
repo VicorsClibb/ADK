@@ -1,9 +1,5 @@
 public class Node{
 
-   // private int height; 
-    //potential bug. Larger problem: Height is being mutated, not persistent. 
-    // Möjligen skapa en tree class som har nod och height fält
-    // som man kan skapa nya versioner av? 
     final int value;
     final Node left, right;
     //private final int none = 0;
