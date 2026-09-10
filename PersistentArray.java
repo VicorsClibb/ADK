@@ -25,26 +25,32 @@ public class PersistentArray {
         return (n == null) ? -1 : n.value;
     }
 
-
+    //ny array, height = 0, rootNode = null
+    //kallar set(a, 3, 10)
     PersistentArray set(PersistentArray a, int i, int value){
-
+        //3 > 0 => No problemo
         if(i < 0){
             throw new IndexOutOfBoundsException();
         }
-
+        //needeBits = 32 - 30 = 2
         int neededBits = 32 - Integer.numberOfLeadingZeros(i);
-
+        //currentRoot = null
         Node currentRoot = a.rootNode;
-
+        //currentHeight = 0
         int currentHeight = a.height;
 
+        //Behövs det här fortfarande?
         //int currentAmountBits = currentHeight; //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
 
+        //newHeight = 0
         int newHeight = currentHeight;
 
+        //2 > 0 => gå in i loop
         while (neededBits > newHeight) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
+            //loop 1: newRoot = new Node(-1, null, null)
 
             Node newRoot = new Node(fetchChild(currentRoot), currentRoot, null);
+            //currentRoot = newRoot
             currentRoot = newRoot;
 
             newHeight++;
@@ -239,7 +245,7 @@ public class PersistentArray {
         PersistentArray arr10 = arr9.set(arr9, 0, 350);
         System.out.println(arr10.rootNode.value + " // should give 350, uppdaterar lägre index med nytt max värde"); 
 
-        //PersistentArray arr11 = arr10.set(arr9.rootNode, -1, 350); //Index out of bound exception
+        //PersistentArray arr11 = arr10.set(arr10.rootNode, -1, 350); //Index out of bound exception
         //System.out.println(arr11.rootNode.value + " // should give 350"); 
 
         PersistentArray arr11 = arr10.set(arr10, 21, 0);
