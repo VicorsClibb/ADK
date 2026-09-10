@@ -8,6 +8,12 @@ public class PersistentArray {
         this.rootNode = null;
     }
 
+
+    //Exempel körning ger: new PersistenArray(2, finalRoot)
+    //Alltså returneras PersistentArray(2, finalRoot) från set(a, 3, 10) där a är en tom array.
+    //Och finalRoot utvecklas till =>
+    //finalRoot = Node(10, currentRoot1, newRight) 
+    //finalRoot = Node(10, Node(-1, null, null), Node(10, null, Node(10, null, null)))
     private PersistentArray(int height, Node rootNode){//hålla persistens, genom denna konstruktor skapa nya objekt baserade på tidigare attribut.
         this.height=height;
         this.rootNode=rootNode;
@@ -25,83 +31,91 @@ public class PersistentArray {
         return (n == null) ? -1 : n.value;
     }
 
-
-    //Exemepel körning:
-    //newarray()
-    //vi har nu height = 1, rootNode = null
-    //vi kallar set(a, 5, 10) : set värde av index till 10.     //Exemepel körning:
-    //newarray()
-    //vi har nu height = 1, rootNode = null
-    //vi kallar set(a, 5, 10) : set värde av index till 10. 
+    //ny array, height = 0, rootNode = null
+    //kallar set(a, 3, 10)
     PersistentArray set(PersistentArray a, int i, int value){
-
+        //3 > 0 => No problemo
         if(i < 0){
             throw new IndexOutOfBoundsException();
         }
-
+        //needeBits = 32 - 30 = 2
         int neededBits = 32 - Integer.numberOfLeadingZeros(i);
-        //5 = 101 (binärt) => neededBits = 3
-
+        //currentRoot = null
         Node currentRoot = a.rootNode;
-        // = null
-
+        //currentHeight = 0
         int currentHeight = a.height;
-        // = 1
 
+        //Behövs det här fortfarande?
         //int currentAmountBits = currentHeight; //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
-        // 1 << 0 = 1
 
+        //newHeight = 0
         int newHeight = currentHeight;
-        // = 1
 
+        //Loop 1: 2 > 0 => gå in i loop
+        //Loop 2: 2 > 1 => gå in i loop
+        //Loop 3: 2 !> 2 => fortsätt förbi
         while (neededBits > newHeight) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
-        //3 > 1 => True
-
+            //Loop 1: newRoot1 = new Node(-1, null, null)
+            //Loop 2: newRoot2 = new Node(-1, currenRoot1, null)
             Node newRoot = new Node(fetchChild(currentRoot), currentRoot, null);
+            //Loop 1: currentRoot1 = newRoot1
+            //Loop 2: currentRoot2 = newRoot2
             currentRoot = newRoot;
 
+            //Loop 1: newHeight = 1
+            //Loop 2: newHeight = 2
             newHeight++;
-            //newHeight 1 => 2
-            //int maxIndex = 1 << (newHeight);
-            //height <=> this.height? => maxIndex = 1 << 1-1 = 1
-            //currentAmountBits = newHeight;
-            // = 0. Error right?
         }
 
-        //this.height är fortfarande 1 för att det är immutable
+        //finalRoot = setRecursive(currentRoot2, 3, 10, 2) => Call 1 => Node(10, currentRoot1, newRight) returneras
+        // => finalRoot = Node(10, currentRoot1, newRight) 
         Node finalRoot = setRecursive(currentRoot, i, value, newHeight);
-
+        // ny persistentArray skapas den nya höjden och den utvecklade nya "noden (aka den som är ett träd i praktiken pga av alla rekursiva anrop)"
         return new PersistentArray(newHeight, finalRoot);
-
-
-
     }
 
    
-
+    //Call 1: setRecursive(currentRoot2, 3, 10, 2) (från set(a, 3, 10))
+    //Call 1: current = currentRoot2, i = 3, value = 10, localHeight = 2
+    //Call 2: setRecursive(currentRight, 3, 10, 1)
+    //Call 2: current2 = null, i2 = 3, value2 = 10, localHeight2 = 1
+    //Call 3: setRecursive(null, 3, 10, 0)
+    //Call 3: current3 = null, i3= 3, value3 = 10, localHeight3 = 0
     private Node setRecursive(Node current, int i, int value, int localHeight){
 
-        //basfall
-        if(localHeight < 1){ //orkar inte tänka, antingen är löv-nivån 0 eller 1, utifrån min tanke nu får det vara 1 som löv och < 1 -> vet att vi är på ett löv.
+        //Call 1: localHeight = 2 => 2 !< 1 => forstätt.
+        //Call 2: localHeight2 = 1 => 1 !< 1 => forstätt.
+        //Call 3: localHeight3 = 0 => 0 < 1 = gå in i if-bracen
+        if(localHeight < 1){ //basfall. Orkar inte tänka, antingen är löv-nivån 0 eller 1, utifrån min tanke nu får det vara 1 som löv och < 1 -> vet att vi är på ett löv.
+            //Call 3: return new Node(10, null, null) to call 2!
             return new Node(value, null, null);
         }
 
+        //Call 1: bitIndexToCheck = 2 - 1 = 1
+        //Call 2: bitIndexToCheck2 = 1 - 1 = 0
         int bitIndexToCheck = localHeight -1;
         
         Node currentLeft;
         Node currentRight;
 
+        //Call 1: currentRoot2 != null => gå in i if-bracen
+        //Call 2: null = null => gå in i else-bracen
         if(current != null){
-             currentLeft = current.left;
-             currentRight = current.right;
+            //Call 1: currentLeft = currentRoot2.left = currentRoot1
+            currentLeft = current.left;
+            //Call 1: currentRight = null
+            currentRight = current.right;
 
         }else{
+            //Call 2: currentLeft2 = null
             currentLeft = null;
+            //Call 2: currentRight2 = null
             currentRight = null;}
     
-
+        //Call 1: 3 >> 1 = 1 => 1 & 1 = 1 => 1 =/= 0 => Gå in i else-bracen
+        //Call 2: 3 >> 0 = 3 => 3 & 1 = 11 & 01 = 1 => 1 != 0 => Gå in i else-bracen
         if(((i >> bitIndexToCheck) & 1) == 0){
-            
+
             Node newLeft = setRecursive(currentLeft, i, value, localHeight-1);
 
             int maxInSubTree = Math.max(fetchChild(newLeft), fetchChild(currentRight));
@@ -110,11 +124,14 @@ public class PersistentArray {
 
             
         }else{
-
+            //Call 1: newRight = setRecursive(null, 3, 10, 1) => Call 2 => Node(10, null, Node(10, null, null)) returneras => newRight = Node(10, null, Node(10, null, null))
+            //Call 2: newRight2 = setRecursive(null, 3, 10, 0) => Call 3 => returnerar Node(10, null, null) => newRight2 = Node(10, null, null)
             Node newRight = setRecursive(currentRight, i, value, localHeight-1);
-
+            //Call 2: maxinSubTreeCall2 = Math.max(10 (fetchChild(newRight2)), -1 (fetchChild(null))) => maxinSubTreeCall2 = 10
+            //Call 1: maxInSubTreeCall = Math.max(10 (fetchChild(Node(10, null, Node(10, null, null)))), -1 (fetchChild(currentRoot1)))
             int maxInSubTree = Math.max(fetchChild(newRight), fetchChild(currentLeft));
-
+            //Call 2: return new Node(10, null, Node(10, null, null)) till där Call 2 utfärdades! 
+            //Call 1: return new Node(10, currentRoot1, newRight) => Call 1 returnerar denna nya node till där det utfärdades!
             return new Node(maxInSubTree, currentLeft, newRight);
 
         }
@@ -236,7 +253,6 @@ public class PersistentArray {
         PersistentArray arr2x = arr1.set(arr1, 1, 45);
         System.out.println(arr2x.get(arr2x, 1) + " // should give 45, uppdaterar värde på samma index korrekt"); 
 
-
         PersistentArray arr3 = arr2.set(arr2, 2, 13);
 
         PersistentArray arr4 = arr3.set(arr3, 3, 100); //probelm i think.
@@ -254,8 +270,6 @@ public class PersistentArray {
         PersistentArray arr8 = arr7.set(arr7, 5, 2);
         System.out.println(arr8.rootNode.value + " // should give 150, skriva över index med högsta (200) uppdaterar korrekt"); 
 
-        
-
         System.out.println(arr4.rootNode.value + " // should give 100, arr4 har fortfarande samma max, dvs persistence håller"); 
 
         PersistentArray arr9 = arr8.set(arr8, 20, 250);
@@ -264,10 +278,8 @@ public class PersistentArray {
         PersistentArray arr10 = arr9.set(arr9, 0, 350);
         System.out.println(arr10.rootNode.value + " // should give 350, uppdaterar lägre index med nytt max värde"); 
 
-        //PersistentArray arr11 = arr10.set(arr9.rootNode, -1, 350); //Index out of bound exception
+        //PersistentArray arr11 = arr10.set(arr10.rootNode, -1, 350); //Index out of bound exception
         //System.out.println(arr11.rootNode.value + " // should give 350"); 
-
-
 
         PersistentArray arr11 = arr10.set(arr10, 21, 0);
         System.out.println(arr11.rootNode.value + " // should give 350, man kan sätta ett värde till 0");
