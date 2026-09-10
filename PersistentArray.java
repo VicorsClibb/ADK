@@ -172,9 +172,16 @@ public class PersistentArray {
         if(left < 0 || right < 0 || left > right){
              throw new IllegalArgumentException("interval not valid");
         }
+        int returnValue = maxsegment(current.rootNode, left, right, current.height);
 
-        return maxsegment(current.rootNode, left, right, current.height);
+        if(returnValue == -1){
+            return 0;
 
+        }else{
+
+            return returnValue;
+        }
+        
     }
 
     private int maxsegment(Node current, int left, int right, int height){ //height = level
@@ -186,7 +193,7 @@ public class PersistentArray {
         if(current == null){return -1;}
 
         //Case B 
-        if(height < 1){return current.value;}
+        if(height == 0){return current.value;}
 
         //Case C 
         int currentAmountBits = height -1;
@@ -209,7 +216,7 @@ public class PersistentArray {
             return Math.max(maxrightsegment(current.left, left, height-1), maxleftsegment(current.right, right,  height-1));
         }
     
-        return -1;
+        return -2;
 
     }
 
@@ -242,7 +249,7 @@ public class PersistentArray {
     }
 
     public static void main(String[] args){
-
+/* 
         PersistentArray test = newarray();
 
         // Node rootV0 = null;
@@ -290,8 +297,35 @@ public class PersistentArray {
 
         PersistentArray arr12 = arr11.set(arr11, 11, 500);
         System.out.println(arr12.rootNode.value + " // should give 500, max uppdaterar korrekt med uppdatering av ett index som var tomt innan men inte max index");
+*/
+        //Tester för maxininterval
+
+        PersistentArray test2 = newarray();
+
+        //Case A
+        int a = test2.maxininterval(test2, 0, 0);
+        System.out.println(a + " // Should give -1");
+
+        //Case B
+        Node nod = new Node(67, null, null);
+        PersistentArray b = new PersistentArray(0, nod);
+        System.out.println(b.maxininterval(b, 0, 0)+ " // Should give 67");
+
+        //Case C
+        PersistentArray b1 = b.set(b, 0, 10);//2 nivåer
+        PersistentArray c = newarray();
+        PersistentArray c1 = c.set(c, 1, 67);
+        PersistentArray c2 = c1.set(c1, 3, 69);
+        System.out.println(b1.maxininterval(b1, 0, 1)+ " // Should give 10");
+
+        //Case D
+        //System.out.println(b1.);
+        System.out.println(b1.get(b1, 1));
+        System.out.println(b1.maxininterval(b1, 1, 1)+ " // Should give -1");
+
 
 
     }
+
 }
 
