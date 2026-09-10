@@ -1,12 +1,10 @@
-import java.security.InvalidAlgorithmParameterException;
-
 public class PersistentArray {
 
     private final int height; //maxSize = 2^(height-1), log(maxSize) = height-1
     private final Node rootNode;
 
     public PersistentArray(){
-        this.height = 1; //löv har höjd 1
+        this.height = 0; //löv har höjd 0
         this.rootNode = null;
     }
 
@@ -15,9 +13,16 @@ public class PersistentArray {
         this.rootNode=rootNode;
     }
 
-     PersistentArray newArray(){
+    private static final PersistentArray empty = new PersistentArray();
+    static PersistentArray newarray(){
 
-        return new PersistentArray();
+        return empty; //Ty persistence kan vi returnera samma tomma array!
+    }
+
+
+    private int fetchChild(Node n) {
+
+        return (n == null) ? -1 : n.value;
     }
 
 
@@ -28,7 +33,7 @@ public class PersistentArray {
     //newarray()
     //vi har nu height = 1, rootNode = null
     //vi kallar set(a, 5, 10) : set värde av index till 10. 
-    PersistentArray set(Node a, int i, int value){
+    PersistentArray set(PersistentArray a, int i, int value){
 
         if(i < 0){
             throw new IndexOutOfBoundsException();
@@ -37,29 +42,29 @@ public class PersistentArray {
         int neededBits = 32 - Integer.numberOfLeadingZeros(i);
         //5 = 101 (binärt) => neededBits = 3
 
-        Node currentRoot = this.rootNode;
+        Node currentRoot = a.rootNode;
         // = null
 
-        int currentHeight = this.height;
+        int currentHeight = a.height;
         // = 1
 
-        int currentAmountBits = 1 << (currentHeight-1); //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
+        //int currentAmountBits = currentHeight; //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
         // 1 << 0 = 1
 
         int newHeight = currentHeight;
         // = 1
 
-        while (neededBits > currentAmountBits) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
+        while (neededBits > newHeight) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
         //3 > 1 => True
 
-            Node newRoot = new Node(-1, currentRoot, null);
+            Node newRoot = new Node(fetchChild(currentRoot), currentRoot, null);
             currentRoot = newRoot;
 
             newHeight++;
             //newHeight 1 => 2
-            int maxIndex = 1 << (newHeight-1);
+            //int maxIndex = 1 << (newHeight);
             //height <=> this.height? => maxIndex = 1 << 1-1 = 1
-            currentAmountBits = maxIndex-1;
+            //currentAmountBits = newHeight;
             // = 0. Error right?
         }
 
@@ -72,10 +77,7 @@ public class PersistentArray {
 
     }
 
-    private int fetchChild(Node n) {
-
-        return (n == null) ? -1 : n.value;
-    }
+   
 
     private Node setRecursive(Node current, int i, int value, int localHeight){
 
@@ -84,7 +86,7 @@ public class PersistentArray {
             return new Node(value, null, null);
         }
 
-        int currentAmountBits = localHeight - 1;
+        int bitIndexToCheck = localHeight -1;
         
         Node currentLeft;
         Node currentRight;
@@ -98,7 +100,7 @@ public class PersistentArray {
             currentRight = null;}
     
 
-        if(((i >> currentAmountBits) & 1) == 0){
+        if(((i >> bitIndexToCheck) & 1) == 0){
             
             Node newLeft = setRecursive(currentLeft, i, value, localHeight-1);
 
@@ -136,8 +138,8 @@ public class PersistentArray {
             return leafValue;
         }
 
-        int currentAmountBits = treeHeight - 1;
-        int bit = ((i >> currentAmountBits) & 1);
+        int bitIndexToCheck = treeHeight -1;
+        int bit = ((i >> bitIndexToCheck) & 1);
 
         if(bit == 0){
 
@@ -188,64 +190,78 @@ public class PersistentArray {
 
         //Case E 
         if(leftBit == 0 && rightBit == 1){
-            Math.max(maxrightsegment(current.left), maxleftsegment(current.right));
+            Math.max(maxrightsegment(current.left, left, height-1), maxleftsegment(current.right, right,  height-1));
         }
     }
 
-    private int maxrightsegment(Node leftChild){
+    private int maxrightsegment(Node leftChild, int left, int height){//största till höger om vänstra index
 
-        
+        int maxIndex = (1 << height) - 1;
+
+        int bitLeft = (left >> (height-1)) & 1; //kikar på msb bit
+        int bitMax = (maxIndex >> (height-1)) & 1;
+    
+        if(bitLeft== 0 && bitMax == 0)return leftChild.left.value;
+        if(bitLeft== 1 && bitMax == 1)return leftChild.right.value;
+        return maxsegment(leftChild, left, maxIndex, height);
     }
-    private int maxleftsegment(Node leftChild){
+    private int maxleftsegment(Node leftChild, int right, int height){
 
+        int minIndex = (1 << height) / 2;
 
+        int bitLeft = (right >> (height-1)) & 1; //kikar på msb bit
+        int bitMin = (minIndex >> (height-1)) & 1;
+    
+        if(bitLeft== 0 && bitMin == 0)return leftChild.left.value;
+        if(bitLeft== 1 && bitMin == 1)return leftChild.right.value;
+        return maxsegment(leftChild, right, minIndex, height);
     }
     
 
 
 
     public static void main(String[] args){
-        PersistentArray test = new PersistentArray();
 
-        Node rootV0 = null;
+        PersistentArray test = newarray();
 
-        PersistentArray arr1 = test.set(rootV0, 0, 67);
+        // Node rootV0 = null;
+
+        PersistentArray arr1 = test.set(test, 0, 67);
         System.out.println(arr1.rootNode.value + " // should give 67 , set sen hämta rotvärdet"); 
+        System.out.println(arr1.get(arr1, 0) + "// ska vara 67");
 
-
-        PersistentArray arr2 = arr1.set(arr1.rootNode, 1, 42);
+        PersistentArray arr2 = arr1.set(arr1, 1, 42);
         System.out.println(arr2.get(arr2, 1) + " // should give 42, set sen get på nya indexet"); 
 
-        PersistentArray arr2x = arr1.set(arr1.rootNode, 1, 45);
+        PersistentArray arr2x = arr1.set(arr1, 1, 45);
         System.out.println(arr2x.get(arr2x, 1) + " // should give 45, uppdaterar värde på samma index korrekt"); 
 
 
-        PersistentArray arr3 = arr2.set(arr2.rootNode, 2, 13);
+        PersistentArray arr3 = arr2.set(arr2, 2, 13);
 
-        PersistentArray arr4 = arr3.set(arr2.rootNode, 3, 100);
+        PersistentArray arr4 = arr3.set(arr3, 3, 100); //probelm i think.
         System.out.println(arr4.rootNode.value + " // should give 100, max updaterar med högre värde insatt"); 
 
-        PersistentArray arr5 = arr4.set(arr3.rootNode, 4, 150);
+        PersistentArray arr5 = arr4.set(arr4, 4, 150);
         //System.out.println(arr5.rootNode.value + " // should give 150"); 
 
-        PersistentArray arr6 = arr5.set(arr4.rootNode, 5, 200);
-        System.out.println(arr6.rootNode.value + " // should give 200, max updaterar med högre värde insatt"); 
-        
-
-        PersistentArray arr7 = arr6.set(arr5.rootNode, 6, 2);
+        PersistentArray arr6 = arr5.set(arr5, 5, 200);
+        System.out.println(arr6.rootNode.value + " // should give 200, max updaterar med högre värde insatt");         
+ 
+        PersistentArray arr7 = arr6.set(arr6, 6, 2); //PROBLEMET!!!!!!!
         System.out.println(arr7.rootNode.value + " // should give 200, max sänks inte av inmatning av lägre värde på annan index"); 
 
-        PersistentArray arr8 = arr7.set(arr6.rootNode, 5, 2);
+        PersistentArray arr8 = arr7.set(arr7, 5, 2);
         System.out.println(arr8.rootNode.value + " // should give 150, skriva över index med högsta (200) uppdaterar korrekt"); 
 
         
 
         System.out.println(arr4.rootNode.value + " // should give 100, arr4 har fortfarande samma max, dvs persistence håller"); 
 
-        PersistentArray arr9 = arr8.set(arr7.rootNode, 20, 250);
+        PersistentArray arr9 = arr8.set(arr8, 20, 250);
         System.out.println(arr9.rootNode.value + " // should give 250, träd måste växa i storlek uppdaterar max korrekt"); 
 
-        PersistentArray arr10 = arr9.set(arr8.rootNode, 0, 350);
+        PersistentArray arr10 = arr9.set(arr9, 0, 350);
         System.out.println(arr10.rootNode.value + " // should give 350, uppdaterar lägre index med nytt max värde"); 
 
         //PersistentArray arr11 = arr10.set(arr9.rootNode, -1, 350); //Index out of bound exception
@@ -253,11 +269,12 @@ public class PersistentArray {
 
 
 
-        PersistentArray arr11 = arr10.set(arr9.rootNode, 21, 0);
+        PersistentArray arr11 = arr10.set(arr10, 21, 0);
         System.out.println(arr11.rootNode.value + " // should give 350, man kan sätta ett värde till 0");
 
-        PersistentArray arr12 = arr11.set(arr10.rootNode, 11, 500);
+        PersistentArray arr12 = arr11.set(arr11, 11, 500);
         System.out.println(arr12.rootNode.value + " // should give 500, max uppdaterar korrekt med uppdatering av ett index som var tomt innan men inte max index");
+
 
     }
 }
