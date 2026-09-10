@@ -34,19 +34,19 @@ public class PersistentArray {
     //ny array, height = 0, rootNode = null
     //kallar set(a, 3, 10)
     PersistentArray set(PersistentArray a, int i, int value){
-        //3 > 0 => No problemo
+        //3 > 0 => Fortsätt förbi
         if(i < 0){
             throw new IndexOutOfBoundsException();
         }
+
         //needeBits = 32 - 30 = 2
         int neededBits = 32 - Integer.numberOfLeadingZeros(i);
+
         //currentRoot = null
         Node currentRoot = a.rootNode;
+
         //currentHeight = 0
         int currentHeight = a.height;
-
-        //Behövs det här fortfarande?
-        //int currentAmountBits = currentHeight; //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
 
         //newHeight = 0
         int newHeight = currentHeight;
@@ -141,34 +141,30 @@ public class PersistentArray {
         
         if(i < 0){
             throw new IndexOutOfBoundsException();
+        } else if (current.rootNode == null){
+            return 0;
+        } else{
+            return getHelpFunc(current.rootNode, i, current.height);
         }
-        if(current.rootNode == null) return 0;
-
-        return getHelpFunc(current.rootNode, i, current.height);
-
     }
 
+    //
     int getHelpFunc(Node current, int i, int treeHeight){
 
-        if(treeHeight < 1){
+        if(treeHeight == 0){
             int leafValue = current.value;
             return leafValue;
         }
 
-        int bitIndexToCheck = treeHeight -1;
+        int bitIndexToCheck = treeHeight - 1;
         int bit = ((i >> bitIndexToCheck) & 1);
 
         if(bit == 0){
-
             return (current.left == null) ? 0 : getHelpFunc(current.left, i, treeHeight - 1);
-
-        }
-
-        return (current.right == null) ? 0 : getHelpFunc(current.right, i, treeHeight - 1);
-        
+        } else{
+            return (current.right == null) ? 0 : getHelpFunc(current.right, i, treeHeight - 1);
+        } 
     }
-
-
 
 
     private int maxininterval(PersistentArray current, int left, int right){
@@ -233,9 +229,6 @@ public class PersistentArray {
         if(bitLeft== 1 && bitMin == 1)return leftChild.right.value;
         return maxsegment(leftChild, right, minIndex, height);
     }
-    
-
-
 
     public static void main(String[] args){
 
