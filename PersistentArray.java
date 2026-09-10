@@ -210,7 +210,7 @@ public class PersistentArray {
         }
     
         return -1;
-        
+
     }
 
     private int maxrightsegment(Node leftChild, int left, int height){//största till höger om vänstra index
@@ -236,10 +236,8 @@ public class PersistentArray {
 
         }else{
 
-            return Math.max(maxsegment(rightChild.right, 0, right , height -1), rightChild.left.value);
+            return Math.max(maxsegment(rightChild.right, 0, right, height -1), rightChild.left.value);
         }
-
-
 
     }
 
