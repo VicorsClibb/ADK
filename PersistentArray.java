@@ -166,6 +166,9 @@ public class PersistentArray {
 
     private int maxsegment(Node current, int left, int right, int height){ //height = level
 
+
+        if(left > right){throw new IllegalArgumentException("nonsensical interval");}
+
         //Case A 
         if(current == null){return -1;}
 
@@ -190,8 +193,10 @@ public class PersistentArray {
 
         //Case E 
         if(leftBit == 0 && rightBit == 1){
-            Math.max(maxrightsegment(current.left, left, height-1), maxleftsegment(current.right, right,  height-1));
+            return Math.max(maxrightsegment(current.left, left, height-1), maxleftsegment(current.right, right,  height-1));
         }
+    
+        return -1;
     }
 
     private int maxrightsegment(Node leftChild, int left, int height){//största till höger om vänstra index
