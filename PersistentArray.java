@@ -51,6 +51,12 @@ public class PersistentArray {
         //newHeight = 0
         int newHeight = currentHeight;
 
+        if(neededBits == 0 && newHeight == 0){
+
+            Node newRoot = new Node(fetchChild(currentRoot), currentRoot, null);
+            currentRoot = newRoot;
+            newHeight++;
+        }
         //Loop 1: 2 > 0 => gå in i loop
         //Loop 2: 2 > 1 => gå in i loop
         //Loop 3: 2 !> 2 => fortsätt förbi
@@ -313,7 +319,7 @@ public class PersistentArray {
 
         //Case A
         int a = test2.maxininterval(test2, 0, 0);
-        System.out.println(a + " // Should give -1");
+        System.out.println(a + " // Should give 0");
 
         //Case B
         Node nod = new Node(67, null, null);
@@ -331,7 +337,7 @@ public class PersistentArray {
         //System.out.println(b1.);
         System.out.println(b1.get(c1, 0)); //0 ty null
         System.out.println(b1.fetchChild(b1.rootNode)); //10
-        System.out.println(b1.maxininterval(b1, 1, 1)+ " // Should give -1");
+        System.out.println(b1.maxininterval(b1, 1, 1)+ " // Should give 0");
 
 
 
