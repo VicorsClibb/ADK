@@ -26,13 +26,6 @@ public class PersistentArray {
     }
 
 
-    //Exemepel körning:
-    //newarray()
-    //vi har nu height = 1, rootNode = null
-    //vi kallar set(a, 5, 10) : set värde av index till 10.     //Exemepel körning:
-    //newarray()
-    //vi har nu height = 1, rootNode = null
-    //vi kallar set(a, 5, 10) : set värde av index till 10. 
     PersistentArray set(PersistentArray a, int i, int value){
 
         if(i < 0){
@@ -40,41 +33,26 @@ public class PersistentArray {
         }
 
         int neededBits = 32 - Integer.numberOfLeadingZeros(i);
-        //5 = 101 (binärt) => neededBits = 3
 
         Node currentRoot = a.rootNode;
-        // = null
 
         int currentHeight = a.height;
-        // = 1
 
         //int currentAmountBits = currentHeight; //Samma sak som 2^(currentHeight-1) (alltid potens 2) maxSize-1 ger då index.
-        // 1 << 0 = 1
 
         int newHeight = currentHeight;
-        // = 1
 
         while (neededBits > newHeight) { //Fixar så att om index's bit.rep > curr.amount av bitar, justerar vi genom att öka trädet.
-        //3 > 1 => True
 
             Node newRoot = new Node(fetchChild(currentRoot), currentRoot, null);
             currentRoot = newRoot;
 
             newHeight++;
-            //newHeight 1 => 2
-            //int maxIndex = 1 << (newHeight);
-            //height <=> this.height? => maxIndex = 1 << 1-1 = 1
-            //currentAmountBits = newHeight;
-            // = 0. Error right?
         }
 
-        //this.height är fortfarande 1 för att det är immutable
         Node finalRoot = setRecursive(currentRoot, i, value, newHeight);
 
         return new PersistentArray(newHeight, finalRoot);
-
-
-
     }
 
    
@@ -236,7 +214,6 @@ public class PersistentArray {
         PersistentArray arr2x = arr1.set(arr1, 1, 45);
         System.out.println(arr2x.get(arr2x, 1) + " // should give 45, uppdaterar värde på samma index korrekt"); 
 
-
         PersistentArray arr3 = arr2.set(arr2, 2, 13);
 
         PersistentArray arr4 = arr3.set(arr3, 3, 100); //probelm i think.
@@ -254,8 +231,6 @@ public class PersistentArray {
         PersistentArray arr8 = arr7.set(arr7, 5, 2);
         System.out.println(arr8.rootNode.value + " // should give 150, skriva över index med högsta (200) uppdaterar korrekt"); 
 
-        
-
         System.out.println(arr4.rootNode.value + " // should give 100, arr4 har fortfarande samma max, dvs persistence håller"); 
 
         PersistentArray arr9 = arr8.set(arr8, 20, 250);
@@ -266,8 +241,6 @@ public class PersistentArray {
 
         //PersistentArray arr11 = arr10.set(arr9.rootNode, -1, 350); //Index out of bound exception
         //System.out.println(arr11.rootNode.value + " // should give 350"); 
-
-
 
         PersistentArray arr11 = arr10.set(arr10, 21, 0);
         System.out.println(arr11.rootNode.value + " // should give 350, man kan sätta ett värde till 0");
