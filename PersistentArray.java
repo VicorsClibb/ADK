@@ -179,6 +179,9 @@ public class PersistentArray {
 
     private int maxsegment(Node current, int left, int right, int height){ //height = level
 
+
+        if(left > right){throw new IllegalArgumentException("nonsensical interval");}
+
         //Case A 
         if(current == null){return -1;}
 
@@ -203,31 +206,41 @@ public class PersistentArray {
 
         //Case E 
         if(leftBit == 0 && rightBit == 1){
-            Math.max(maxrightsegment(current.left, left, height-1), maxleftsegment(current.right, right,  height-1));
+            return Math.max(maxrightsegment(current.left, left, height-1), maxleftsegment(current.right, right,  height-1));
         }
+    
+        return -1;
+        
     }
 
     private int maxrightsegment(Node leftChild, int left, int height){//största till höger om vänstra index
 
-        int maxIndex = (1 << height) - 1;
-
         int bitLeft = (left >> (height-1)) & 1; //kikar på msb bit
-        int bitMax = (maxIndex >> (height-1)) & 1;
-    
-        if(bitLeft== 0 && bitMax == 0)return leftChild.left.value;
-        if(bitLeft== 1 && bitMax == 1)return leftChild.right.value;
-        return maxsegment(leftChild, left, maxIndex, height);
+
+        if(bitLeft == 0){
+            return Math.max(maxsegment(leftChild.left, left, ((1 << height)-1) , height -1), leftChild.right.value);
+
+        }else{
+
+            return fetchChild(leftChild.right);
+        }
+
+   
     }
-    private int maxleftsegment(Node leftChild, int right, int height){
+    private int maxleftsegment(Node rightChild, int right, int height){
 
-        int minIndex = (1 << height) / 2;
+        int bitRight = (right >> (height-1)) & 1; //kikar på msb bit
 
-        int bitLeft = (right >> (height-1)) & 1; //kikar på msb bit
-        int bitMin = (minIndex >> (height-1)) & 1;
-    
-        if(bitLeft== 0 && bitMin == 0)return leftChild.left.value;
-        if(bitLeft== 1 && bitMin == 1)return leftChild.right.value;
-        return maxsegment(leftChild, right, minIndex, height);
+        if(bitRight == 0){
+            return fetchChild(rightChild.right);
+
+        }else{
+
+            return Math.max(maxsegment(rightChild.right, 0, right , height -1), rightChild.left.value);
+        }
+
+
+
     }
 
     public static void main(String[] args){
