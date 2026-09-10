@@ -166,10 +166,10 @@ public class PersistentArray {
         } 
     }
 
+    //Testa för right utanför maxindex
+    int maxininterval(PersistentArray current, int left, int right){
 
-    private int maxininterval(PersistentArray current, int left, int right){
-
-        if(left < 0 || right < 0 || left > right){
+        if(left < 0 || right < 0 || left > right){ //Jämförelse av index som tal, men används inte för navigering så borde vara okej.
              throw new IllegalArgumentException("interval not valid");
         }
 
