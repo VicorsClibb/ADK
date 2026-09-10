@@ -143,7 +143,9 @@ public class PersistentArray {
             throw new IndexOutOfBoundsException();
         } else if (current.rootNode == null){
             return 0;
-        } else{
+        } else if(32 - Integer.numberOfLeadingZeros(i) > current.height){
+            return 0;
+        }else{
             return getHelpFunc(current.rootNode, i, current.height);
         }
     }
@@ -222,28 +224,35 @@ public class PersistentArray {
 
     private int maxrightsegment(Node leftChild, int left, int height){//största till höger om vänstra index
 
+
+        if(leftChild == null)return 0;
+
         int bitLeft = (left >> (height-1)) & 1; //kikar på msb bit
 
         if(bitLeft == 0){
-            return Math.max(maxsegment(leftChild.left, left, ((1 << height)-1) , height -1), leftChild.right.value);
+            return Math.max(maxrightsegment(leftChild.left, left, height -1), fetchChild(leftChild.right));
 
         }else{
 
-            return fetchChild(leftChild.right);
+            return maxrightsegment(leftChild.right, left, height -1);
         }
 
    
     }
     private int maxleftsegment(Node rightChild, int right, int height){
 
+
+        if(rightChild == null)return 0;
+
         int bitRight = (right >> (height-1)) & 1; //kikar på msb bit
 
         if(bitRight == 0){
-            return fetchChild(rightChild.right);
+
+            return maxleftsegment(rightChild.left, right, height -1);
 
         }else{
 
-            return Math.max(maxsegment(rightChild.right, 0, right, height -1), rightChild.left.value);
+            return Math.max(maxleftsegment(rightChild.right, right, height -1), fetchChild(rightChild.left));
         }
 
     }
@@ -320,7 +329,8 @@ public class PersistentArray {
 
         //Case D
         //System.out.println(b1.);
-        System.out.println(b1.get(b1, 1));
+        System.out.println(b1.get(c1, 0)); //0 ty null
+        System.out.println(b1.fetchChild(b1.rootNode)); //10
         System.out.println(b1.maxininterval(b1, 1, 1)+ " // Should give -1");
 
 
