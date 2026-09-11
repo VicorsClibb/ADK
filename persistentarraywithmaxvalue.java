@@ -53,7 +53,6 @@ public class persistentarraywithmaxvalue {
             }
 
         }
-
         scanner.close();
     }
 }

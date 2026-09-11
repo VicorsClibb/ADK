@@ -171,7 +171,15 @@ public class PersistentArray {
 
         if(left < 0 || right < 0 || left > right){ //Jämförelse av index som tal, men används inte för navigering så borde vara okej.
              throw new IllegalArgumentException("interval not valid");
+
+        }else if(left > ((1 << current.height) - 1)){//Om nedre gränsen är större än max index => inget värde kan vara tilldelat där.
+            return 0;
+
+        }else if(right > ((1 << current.height) - 1)){//Om övre gränsen är större än max index, kolla all värden från nedregränsen till max index.
+
+            right = ((1 << current.height) - 1);
         }
+
         int returnValue = maxsegment(current.rootNode, left, right, current.height);
 
         if(returnValue == -1){
@@ -189,43 +197,50 @@ public class PersistentArray {
 
         if(left > right){throw new IllegalArgumentException("nonsensical interval");}
 
-        //Case A 
-        if(current == null){return -1;}
-
-        //Case B 
-        if(height == 0){return current.value;}
-
-        //Case C 
         int currentAmountBits = height -1;
         int leftBit = ((left >> currentAmountBits) & 1);
         int rightBit = ((right >> currentAmountBits) & 1);
 
-        if(leftBit == 0 && rightBit == 0){
+        //Case A 
+        if(current == null){return -1;
+
+        }else if(height == 0){//Case B
+
+            {return current.value;}
+
+        }else if(leftBit == 0 && rightBit == 0){//Case C
+
             Node leftChild = current.left;
             return maxsegment(leftChild, left, right, height-1);
-        }
 
-        //Case D 
-        if(leftBit == 1 && rightBit == 1){
+        }else if(leftBit == 1 && rightBit == 1){//Case D 
+
             Node rightChild = current.right;
             return maxsegment(rightChild, left, right, height-1);
-        }
 
-        //Case E 
-        if(leftBit == 0 && rightBit == 1){
+        }else if(leftBit == 0 && rightBit == 1){//Case E 
+
             return Math.max(maxrightsegment(current.left, left, height-1), maxleftsegment(current.right, right,  height-1));
-        }
-    
-        return -2;
+        }else{
 
+            return -2;
+        }
     }
 
     private int maxrightsegment(Node leftChild, int left, int height){//största till höger om vänstra index
 
+        if(leftChild == null){
+            return -1;
+        }
+
+        if(height == 0){
+            return leftChild.value;
+        }
+        
         int bitLeft = (left >> (height-1)) & 1; //kikar på msb bit
 
         if(bitLeft == 0){
-            return Math.max(maxsegment(leftChild.left, left, ((1 << height)-1) , height -1), leftChild.right.value);
+            return Math.max(maxrightsegment(leftChild.left, left, height -1), fetchChild(leftChild.right));
 
         }else{
 
@@ -236,20 +251,28 @@ public class PersistentArray {
     }
     private int maxleftsegment(Node rightChild, int right, int height){
 
+        if(rightChild == null){
+            return -1;
+        }
+
+        if(height == 0){
+            return rightChild.value;
+        }    
+        
         int bitRight = (right >> (height-1)) & 1; //kikar på msb bit
 
-        if(bitRight == 0){
-            return fetchChild(rightChild.right);
+        if(bitRight == 1){
 
+            return Math.max(maxleftsegment(rightChild.right, right, height -1), fetchChild(rightChild.left));
+            
         }else{
-
-            return Math.max(maxsegment(rightChild.right, 0, right, height -1), rightChild.left.value);
+            return maxleftsegment(rightChild.left, right, height-1);
         }
 
     }
 
     public static void main(String[] args){
-/* 
+        /* 
         PersistentArray test = newarray();
 
         // Node rootV0 = null;
@@ -297,14 +320,14 @@ public class PersistentArray {
 
         PersistentArray arr12 = arr11.set(arr11, 11, 500);
         System.out.println(arr12.rootNode.value + " // should give 500, max uppdaterar korrekt med uppdatering av ett index som var tomt innan men inte max index");
-*/
-        //Tester för maxininterval
 
+        //Tester för maxininterval
+        
         PersistentArray test2 = newarray();
 
         //Case A
         int a = test2.maxininterval(test2, 0, 0);
-        System.out.println(a + " // Should give -1");
+        System.out.println(a + " // Should give 0");
 
         //Case B
         Node nod = new Node(67, null, null);
@@ -321,8 +344,17 @@ public class PersistentArray {
         //Case D
         //System.out.println(b1.);
         System.out.println(b1.get(b1, 1));
-        System.out.println(b1.maxininterval(b1, 1, 1)+ " // Should give -1");
+        System.out.println(b1.maxininterval(b1, 1, 1)+ " // Should give 0");
+        
+        //Case E
+        PersistentArray testE = newarray();
+        PersistentArray testE1 = testE.set(testE, 7, 5);
+        PersistentArray testE2 = testE1.set(testE1, 1, 3);
+        PersistentArray testE3 = testE2.set(testE2, 2, 6);
+        PersistentArray testE4 = testE3.set(testE3, 3, 20);
 
+        System.out.println(testE4.maxininterval(testE4, 1, 7));
+        */
 
 
     }
