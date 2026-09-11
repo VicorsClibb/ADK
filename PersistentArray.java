@@ -20,8 +20,8 @@ public class PersistentArray {
     }
 
     private static final PersistentArray empty = new PersistentArray();
-    static PersistentArray newarray(){
 
+    static PersistentArray newarray(){
         return empty; //Ty persistence kan vi returnera samma tomma array!
     }
 
@@ -35,8 +35,9 @@ public class PersistentArray {
     //kallar set(a, 3, 10)
     PersistentArray set(PersistentArray a, int i, int value){
         //3 > 0 => Fortsätt förbi
+        try{
         if(i < 0){
-            throw new IndexOutOfBoundsException();
+            throw new IllegalArgumentException("index not valid");
         }
 
         //needeBits = 32 - 30 = 2
@@ -72,7 +73,9 @@ public class PersistentArray {
         Node finalRoot = setRecursive(currentRoot, i, value, newHeight);
         // ny persistentArray skapas den nya höjden och den utvecklade nya "noden (aka den som är ett träd i praktiken pga av alla rekursiva anrop)"
         return new PersistentArray(newHeight, finalRoot);
-    }
+    }catch(IllegalArgumentException e){
+        return a;
+    }}
 
    
     //Call 1: setRecursive(currentRoot2, 3, 10, 2) (från set(a, 3, 10))
@@ -138,13 +141,18 @@ public class PersistentArray {
     }
 
     int get(PersistentArray current, int i){
-        
+        try{
         if(i < 0){
-            throw new IndexOutOfBoundsException();
+            throw new IllegalArgumentException("interval not valid");
         } else if (current.rootNode == null){
             return 0;
-        } else{
+        } else if(i > ((1 << current.height) - 1)){
+
+            return 0;
+        }else{
             return getHelpFunc(current.rootNode, i, current.height);
+        }}catch(IllegalArgumentException e){
+            return 0;
         }
     }
 
@@ -168,7 +176,7 @@ public class PersistentArray {
 
     //Testa för right utanför maxindex
     int maxininterval(PersistentArray current, int left, int right){
-
+        try{
         if(left < 0 || right < 0 || left > right){ //Jämförelse av index som tal, men används inte för navigering så borde vara okej.
              throw new IllegalArgumentException("interval not valid");
 
@@ -188,15 +196,19 @@ public class PersistentArray {
         }else{
 
             return returnValue;
+        }}catch(IllegalArgumentException e){
+            return 0;
         }
         
     }
 
     private int maxsegment(Node current, int left, int right, int height){ //height = level
 
-
+        try{
         if(left > right){throw new IllegalArgumentException("nonsensical interval");}
-
+            }catch(IllegalArgumentException e){
+                return 0;
+            }
         int currentAmountBits = height -1;
         int leftBit = ((left >> currentAmountBits) & 1);
         int rightBit = ((right >> currentAmountBits) & 1);
@@ -244,7 +256,7 @@ public class PersistentArray {
 
         }else{
 
-            return fetchChild(leftChild.right);
+            return maxrightsegment(leftChild.right, left, height - 1);
         }
 
    
@@ -272,7 +284,7 @@ public class PersistentArray {
     }
 
     public static void main(String[] args){
-        /* 
+         
         PersistentArray test = newarray();
 
         // Node rootV0 = null;
@@ -354,9 +366,14 @@ public class PersistentArray {
         PersistentArray testE4 = testE3.set(testE3, 3, 20);
 
         System.out.println(testE4.maxininterval(testE4, 1, 7));
-        */
-
-
+        //*/
+        
+        //get testing
+        PersistentArray testGet = newarray();
+        PersistentArray testGet1 = testGet.set(testGet, 2, 10);
+        System.out.println(testGet1.get(testGet1, 2));
+        System.out.println(testGet1.get(testGet1, 10)); //Index större än max index test
+        System.out.println(testGet1.get(testGet1, 20)); //Index större än max index test
     }
 
 }

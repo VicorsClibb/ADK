@@ -14,13 +14,19 @@ public class persistentarraywithmaxvalue {
 
 
         while (scanner.hasNextLine()){
-            String string = scanner.nextLine();
+            String string = scanner.nextLine().trim();
 
-            String [] tokens = string.split(" ");
+            if (string.isEmpty()) continue;
+            
+            String [] tokens = string.split("\\s+");
 
             String command = tokens[0];
-
+            try{
             if (command.equals("set")){
+
+                if (tokens.length < 3) {
+                    continue; 
+                }
 
                 int index = Integer.parseInt(tokens[1]);
                 int value = Integer.parseInt(tokens[2]);
@@ -30,6 +36,10 @@ public class persistentarraywithmaxvalue {
                 array = array.set(array, index, value);
 
             }else if(command.equals("get")){
+
+                if (tokens.length < 2) {
+                    continue;
+                }
 
                 int index = Integer.parseInt(tokens[1]);
 
@@ -43,6 +53,11 @@ public class persistentarraywithmaxvalue {
                 }
 
             }else if(command.equals("maxininterval")){
+                
+                if (tokens.length < 3) {
+                    continue;
+                }
+
                 int left = Integer.parseInt(tokens[1]);
                 int right = Integer.parseInt(tokens[2]);
 
@@ -51,7 +66,7 @@ public class persistentarraywithmaxvalue {
                 System.out.println(max);
 
             }
-
+        }catch(Exception e){}
         }
         scanner.close();
     }
