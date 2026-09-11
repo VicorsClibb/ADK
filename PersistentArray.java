@@ -35,6 +35,7 @@ public class PersistentArray {
     //kallar set(a, 3, 10)
     PersistentArray set(PersistentArray a, int i, int value){
         //3 > 0 => Fortsätt förbi
+        try{
         if(i < 0){
             throw new IllegalArgumentException("index not valid");
         }
@@ -72,7 +73,9 @@ public class PersistentArray {
         Node finalRoot = setRecursive(currentRoot, i, value, newHeight);
         // ny persistentArray skapas den nya höjden och den utvecklade nya "noden (aka den som är ett träd i praktiken pga av alla rekursiva anrop)"
         return new PersistentArray(newHeight, finalRoot);
-    }
+    }catch(IllegalArgumentException e){
+        return a;
+    }}
 
    
     //Call 1: setRecursive(currentRoot2, 3, 10, 2) (från set(a, 3, 10))
@@ -138,7 +141,7 @@ public class PersistentArray {
     }
 
     int get(PersistentArray current, int i){
-        
+        try{
         if(i < 0){
             throw new IllegalArgumentException("interval not valid");
         } else if (current.rootNode == null){
@@ -148,6 +151,8 @@ public class PersistentArray {
             return 0;
         }else{
             return getHelpFunc(current.rootNode, i, current.height);
+        }}catch(IllegalArgumentException e){
+            return 0;
         }
     }
 
@@ -171,7 +176,7 @@ public class PersistentArray {
 
     //Testa för right utanför maxindex
     int maxininterval(PersistentArray current, int left, int right){
-
+        try{
         if(left < 0 || right < 0 || left > right){ //Jämförelse av index som tal, men används inte för navigering så borde vara okej.
              throw new IllegalArgumentException("interval not valid");
 
@@ -191,15 +196,19 @@ public class PersistentArray {
         }else{
 
             return returnValue;
+        }}catch(IllegalArgumentException e){
+            return 0;
         }
         
     }
 
     private int maxsegment(Node current, int left, int right, int height){ //height = level
 
-
+        try{
         if(left > right){throw new IllegalArgumentException("nonsensical interval");}
-
+            }catch(IllegalArgumentException e){
+                return 0;
+            }
         int currentAmountBits = height -1;
         int leftBit = ((left >> currentAmountBits) & 1);
         int rightBit = ((right >> currentAmountBits) & 1);
