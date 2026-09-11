@@ -16,6 +16,4 @@ public class Node{
         this.left = old.left;
         this.right = old.right;
     }
-
-
 }

@@ -14,8 +14,10 @@ public class persistentarraywithmaxvalue {
 
 
         while (scanner.hasNextLine()){
-            String string = scanner.nextLine();
+            String string = scanner.nextLine().trim();
 
+            if (string.isEmpty()) continue;
+            
             String [] tokens = string.split(" ");
 
             String command = tokens[0];

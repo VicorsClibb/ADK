@@ -20,8 +20,8 @@ public class PersistentArray {
     }
 
     private static final PersistentArray empty = new PersistentArray();
-    static PersistentArray newarray(){
 
+    static PersistentArray newarray(){
         return empty; //Ty persistence kan vi returnera samma tomma array!
     }
 
@@ -36,7 +36,7 @@ public class PersistentArray {
     PersistentArray set(PersistentArray a, int i, int value){
         //3 > 0 => Fortsätt förbi
         if(i < 0){
-            throw new IndexOutOfBoundsException();
+            throw new IllegalArgumentException("index not valid");
         }
 
         //needeBits = 32 - 30 = 2
@@ -140,10 +140,13 @@ public class PersistentArray {
     int get(PersistentArray current, int i){
         
         if(i < 0){
-            throw new IndexOutOfBoundsException();
+            throw new IllegalArgumentException("interval not valid");
         } else if (current.rootNode == null){
             return 0;
-        } else{
+        } else if(i > ((1 << current.height) - 1)){
+
+            return 0;
+        }else{
             return getHelpFunc(current.rootNode, i, current.height);
         }
     }
@@ -244,7 +247,7 @@ public class PersistentArray {
 
         }else{
 
-            return fetchChild(leftChild.right);
+            return maxrightsegment(leftChild.right, left, height - 1);
         }
 
    
@@ -272,7 +275,7 @@ public class PersistentArray {
     }
 
     public static void main(String[] args){
-        /* 
+         
         PersistentArray test = newarray();
 
         // Node rootV0 = null;
@@ -354,9 +357,14 @@ public class PersistentArray {
         PersistentArray testE4 = testE3.set(testE3, 3, 20);
 
         System.out.println(testE4.maxininterval(testE4, 1, 7));
-        */
-
-
+        //*/
+        
+        //get testing
+        PersistentArray testGet = newarray();
+        PersistentArray testGet1 = testGet.set(testGet, 2, 10);
+        System.out.println(testGet1.get(testGet1, 2));
+        System.out.println(testGet1.get(testGet1, 10)); //Index större än max index test
+        System.out.println(testGet1.get(testGet1, 20)); //Index större än max index test
     }
 
 }
