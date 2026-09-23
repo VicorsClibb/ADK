@@ -6,11 +6,11 @@
     3.
     Innan:
         java Main -t
-        Processing folder: ./test
-        Processing testcase: testmedordlista
-        CPU time for this test: 14 ms
-        Processing testcase: testmedordlista2
-        CPU time for this test: 1 ms
+    Processing folder: ./test
+    Processing testcase: testmedordlista
+    CPU time for this test: 14 ms
+    Processing testcase: testmedordlista2
+    CPU time for this test: 1 ms
     Efter:
         java Main -t
         Processing folder: ./test
@@ -23,6 +23,21 @@
     1. Utnyttja att indata är i bokstavsordning.
     2.
     3.
+    Test Efter:
+    java Main -t
+    Processing folder: ./test
+    Processing testcase: testmedordlista
+    CPU time for this test: 5 ms
+    Processing testcase: testmedordlista2
+    CPU time for this test: 0 ms
+
+    Large Efter:
+    java Main -t large
+    Processing folder: large
+    Processing testcase: testmedordlista3
+    CPU time for this test: 66 ms
+    Processing testcase: testmedordlista4
+    CPU time for this test: 55 ms
 3. Terminera partDist tidigt om closestDistance överskrids
     1.
     2.

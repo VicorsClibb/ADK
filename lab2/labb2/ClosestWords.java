@@ -9,23 +9,16 @@ public class ClosestWords {
 
   int closestDistance = -1;
 
-  int dynPartDist(String w1, String w2, int w1len, int w2len){
+  int[][] dynProgMatris = null;
+
+  
+  int dynPartDist(String w1, String w2, int w1len, int w2len, int p){
 
     int kostnad;
 
-    int[][] dynProgMatris = new int[w1len + 1][w2len + 1];
-
-    for (int i = 0; i <= w1len; i++){
-      dynProgMatris[i][0] = i;
-    }
-
-    for (int j = 0; j <= w2len; j++){
-      dynProgMatris[0][j] = j;
-    }
-
     for(int i = 1; i <= w1len; i++){
 
-      for(int j = 1; j <= w2len; j++){
+      for(int j = p + 1; j <= w2len; j++){
         
         if(w1.charAt(i - 1) == w2.charAt(j - 1)){
   
@@ -45,37 +38,37 @@ public class ClosestWords {
     return dynProgMatris[w1len][w2len];
   }
 
-  //Metod som 
+  int distance(String w1, String w2, int p) {
 
-
-
-
-
-  int partDist(String w1, String w2, int w1len, int w2len) {
-    if (w1len == 0)
-      return w2len;
-    if (w2len == 0)
-      return w1len;
-    int res = partDist(w1, w2, w1len - 1, w2len - 1) + 
-	(w1.charAt(w1len - 1) == w2.charAt(w2len - 1) ? 0 : 1);
-    int addLetter = partDist(w1, w2, w1len - 1, w2len) + 1;
-    if (addLetter < res)
-      res = addLetter;
-    int deleteLetter = partDist(w1, w2, w1len, w2len - 1) + 1;
-    if (deleteLetter < res)
-      res = deleteLetter;
-    return res;
-  }
-
-  int distance(String w1, String w2) {
-    //return partDist(w1, w2, w1.length(), w2.length());
-    //
-    return dynPartDist(w1, w2, w1.length(), w2.length());
+    return dynPartDist(w1, w2, w1.length(), w2.length(), p);
   }
 
   public ClosestWords(String w, List<String> wordList) {
+
+    //
+    dynProgMatris = new int[w.length() + 1][40];
+    //Föredetta ord
+    String tidigare = "";
+    
+    for (int i = 0; i <= w.length(); i++){
+      dynProgMatris[i][0] = i;
+    }
+
+    for (int j = 0; j <= 39; j++){
+      dynProgMatris[0][j] = j;
+    }
+
+
     for (String s : wordList) {
-      int dist = distance(w, s);
+      int p = 0;
+
+      while(p < Math.min(s.length(), tidigare.length()) && s.charAt(p) == tidigare.charAt(p)){
+        p++;
+      }
+      int dist = distance(w, s, p);
+
+      tidigare = s;
+
       // System.out.println("d(" + w + "," + s + ")=" + dist);
       if (dist < closestDistance || closestDistance == -1) {
         closestDistance = dist;
