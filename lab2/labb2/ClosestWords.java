@@ -9,6 +9,48 @@ public class ClosestWords {
 
   int closestDistance = -1;
 
+  int dynPartDist(String w1, String w2, int w1len, int w2len){
+
+    int kostnad;
+
+    int[][] dynProgMatris = new int[w1len + 1][w2len + 1];
+
+    for (int i = 0; i <= w1len; i++){
+      dynProgMatris[i][0] = i;
+    }
+
+    for (int j = 0; j <= w2len; j++){
+      dynProgMatris[0][j] = j;
+    }
+
+    for(int i = 1; i <= w1len; i++){
+
+      for(int j = 1; j <= w2len; j++){
+        
+        if(w1.charAt(i - 1) == w2.charAt(j - 1)){
+  
+          kostnad = 0;
+        } else {
+
+          kostnad = 1;
+        }
+
+        dynProgMatris[i][j] = 
+          Math.min(
+            Math.min((dynProgMatris[i-1][j-1] + kostnad), dynProgMatris[i-1][j]+1),
+            dynProgMatris[i][j-1]+1);
+      }
+    }
+
+    return dynProgMatris[w1len][w2len];
+  }
+
+  //Metod som 
+
+
+
+
+
   int partDist(String w1, String w2, int w1len, int w2len) {
     if (w1len == 0)
       return w2len;
@@ -26,7 +68,9 @@ public class ClosestWords {
   }
 
   int distance(String w1, String w2) {
-    return partDist(w1, w2, w1.length(), w2.length());
+    //return partDist(w1, w2, w1.length(), w2.length());
+    //
+    return dynPartDist(w1, w2, w1.length(), w2.length());
   }
 
   public ClosestWords(String w, List<String> wordList) {
