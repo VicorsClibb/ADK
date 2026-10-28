@@ -35,14 +35,14 @@ public class BipRed {
 	// Skriv ut antal hörn och kanter samt källa och sänka
 	io.println(v);
 	io.println(s + " " + t);
-	io.println(e);
+	io.println(e + x + y);
 	int c = 1;
 
 	//printar kanterna från inloppet s till varje nod i vänstra delmängden.
 	for(int i = 0; i < x; i++){
 		int nodX = i + 1;
 		
-		io.print(s + " " + nodX + " " + c);
+		io.println(s + " " + nodX + " " + c);
 	}
 
 	for (int i = 0; i < e; ++i) {
@@ -55,7 +55,7 @@ public class BipRed {
 	for(int i = 0; i < y; i++){
 
 		int nodY = (x+1) + i;
-		io.print(nodY + " " + t + " " + c);
+		io.println(nodY + " " + t + " " + c);
 	}
 
 	// Var noggrann med att flusha utdata när flödesgrafen skrivits ut!
