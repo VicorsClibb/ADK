@@ -38,6 +38,7 @@
     CPU time for this test: 66 ms
     Processing testcase: testmedordlista4
     CPU time for this test: 55 ms
+    
 3. Terminera partDist tidigt om closestDistance överskrids
     1.
     2.

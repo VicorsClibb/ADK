@@ -65,6 +65,7 @@ public class ClosestWords {
       while(p < Math.min(s.length(), tidigare.length()) && s.charAt(p) == tidigare.charAt(p)){
         p++;
       }
+      
       int dist = distance(w, s, p);
 
       tidigare = s;
