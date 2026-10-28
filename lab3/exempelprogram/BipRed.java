@@ -15,28 +15,49 @@ public class BipRed {
 	// Läs antal hörn och kanter
 	int x = io.getInt();
 	int y = io.getInt();
+	//int sizeV = x + y;
 	int e = io.getInt();
 	
 	// Läs in kanterna
+	int[] a = new int[e]; //innehåller vänstra de
+	int[] b = new int[e];
 	for (int i = 0; i < e; ++i) {
-	    int a = io.getInt();
-	    int b = io.getInt();
+	    a[i] = io.getInt();
+	    b[i] = io.getInt();
 	}
+	writeFlowGraph(x, y, e, a, b);
     }
     
     
-    void writeFlowGraph() {
-	int v = 23, e = 0, s = 1, t = 2;
+    void writeFlowGraph(int x, int y, int sizeE, int[] a, int[] b) {
+	int v = x + y + 2, e = sizeE, s = v - 1, t = v; 
 	
 	// Skriv ut antal hörn och kanter samt källa och sänka
 	io.println(v);
 	io.println(s + " " + t);
-	io.println(e);
-	for (int i = 0; i < e; ++i) {
-	    int a = 1, b = 2, c = 17;
-	    // Kant från a till b med kapacitet c
-	    io.println(a + " " + b + " " + c);
+	io.println(e + x + y);
+	int c = 1;
+
+	//printar kanterna från inloppet s till varje nod i vänstra delmängden.
+	for(int i = 0; i < x; i++){
+		int nodX = i + 1;
+		
+		io.println(s + " " + nodX + " " + c);
 	}
+
+	for (int i = 0; i < e; ++i) {
+		int n = a[i], m = b[i];
+	    // Kant från n till m med kapacitet c
+	    io.println(n + " " + m + " " + c);
+	}
+
+	//printar kanterna från varje nod i den högra delmängden till utloppet t.
+	for(int i = 0; i < y; i++){
+
+		int nodY = (x+1) + i;
+		io.println(nodY + " " + t + " " + c);
+	}
+
 	// Var noggrann med att flusha utdata när flödesgrafen skrivits ut!
 	io.flush();
 	
@@ -84,11 +105,11 @@ public class BipRed {
 	
 	readBipartiteGraph();
 	
-	writeFlowGraph();
+	//writeFlowGraph();
 	
-	readMaxFlowSolution();
+	//readMaxFlowSolution();
 	
-	writeBipMatchSolution();
+	//writeBipMatchSolution();
 
 	// debugutskrift
 	System.err.println("Bipred avslutar\n");
