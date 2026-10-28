@@ -15,23 +15,27 @@ public class BipRed {
 	// Läs antal hörn och kanter
 	int x = io.getInt();
 	int y = io.getInt();
+	int sizeV = x + y;
 	int e = io.getInt();
 	
 	// Läs in kanterna
+	int[] a = new int[e];
+	int[] b = new int[e];
 	for (int i = 0; i < e; ++i) {
-	    int a = io.getInt();
-	    int b = io.getInt();
+	    a[i] = io.getInt();
+	    b[i] = io.getInt();
 	}
+	writeFlowGraph(sizeV, e, a, b);
     }
     
     
-    void writeFlowGraph() {
-	int v = 23, e = 0, s = 1, t = 2;
+    void writeFlowGraph(int sizeV, int sizeE, int[] x, int[] y) {
+	int s = 1, t = v + 2; // flyttar alla noders position ett steg höger, s tar 1 och v tar sista.
 	
 	// Skriv ut antal hörn och kanter samt källa och sänka
-	io.println(v);
+	io.println(sizeV);
 	io.println(s + " " + t);
-	io.println(e);
+	io.println(sizeE);
 	for (int i = 0; i < e; ++i) {
 	    int a = 1, b = 2, c = 17;
 	    // Kant från a till b med kapacitet c
