@@ -29,8 +29,8 @@ public class BipRed {
     }
     
     
-    void writeFlowGraph(int x, int y, int sizeV, int sizeE, int[] a, int[] b) {
-	int v = x + y + 2, e = sizeE + sizeV, s = v - 1, t = v; 
+    void writeFlowGraph(int x, int y, int sizeE, int[] a, int[] b) {
+	int v = x + y + 2, e = sizeE, s = v - 1, t = v; 
 	
 	// Skriv ut antal hörn och kanter samt källa och sänka
 	io.println(v);
@@ -57,7 +57,7 @@ public class BipRed {
 		int nodY = (x+1) + i;
 		io.print(nodY + " " + t + " " + c);
 	}
-	
+
 	// Var noggrann med att flusha utdata när flödesgrafen skrivits ut!
 	io.flush();
 	
