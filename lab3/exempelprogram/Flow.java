@@ -40,6 +40,10 @@ public class Flow {
         }
     }
 
+    updtFlowGraph(){
+        
+    }
+
     int queue(){
         
     }
