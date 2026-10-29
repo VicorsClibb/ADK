@@ -30,9 +30,8 @@ public class BipMatch {
 	    a[i] = io.getInt();
 	    b[i] = io.getInt();
     }
-
+    buildFlowGraph();
     }
-
 
     void addKant(int tidigare, int nästa, int kap){
             till[antalKanter*2] = nästa;
@@ -67,17 +66,17 @@ public class BipMatch {
         
         for (int i = 0; i < e; ++i) {
             int n = a[i], m = b[i];
-            addKant(n, m, rkap[i*2+1]);
+            addKant(n, m, 1);
         }
 
         for(int i = 0; i < x; i++){
             int nodX = i + 1;
-            addKant(s, nodX, rkap[nodX]);
+            addKant(s, nodX, 1);
         }
 
         for(int i = 0; i < y; i++){
             int nodY = (x+1) + i;
-            addKant(nodY, t, rkap[nodY]);
+            addKant(nodY, t, 1);
         }
     }
 
@@ -163,21 +162,12 @@ public class BipMatch {
 
         int mf = maxFlow();
 
-        io.println(v);
-        io.println(s + " " + t + " " + mf);
-
-        int positivaKanter = 0;
+        io.println(cache4xy[0] + " " + cache4xy[1]);
+        io.println(antalKanter);
 
         for(int i = 0; i < e; i++){
             if(rkap[2*i+1] > 0){
-                positivaKanter++;
-            }
-        }
-
-        io.println(positivaKanter);
-        for(int i = 0; i < e; i++){
-            if(rkap[2*i+1] > 0){
-                io.println(till[2*i+1] + " " + till[(i*2+1) ^ 1] + " " + rkap[2*i + 1]);
+                io.print(a[i] + " " + b[i]);
             }
         }
     }
@@ -186,7 +176,7 @@ public class BipMatch {
     BipMatch() {
 	io = new Kattio(System.in, System.out);
 
-    readFlowGraph();
+    readBipartiteGraph();
     
     writeFlow();
     
@@ -198,6 +188,6 @@ public class BipMatch {
     }
     
     public static void main(String args[]) {
-	new Flow();
+	new BipMatch();
     }
 }
