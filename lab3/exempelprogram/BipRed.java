@@ -10,26 +10,31 @@
 
 public class BipRed {
     Kattio io;
+
+	int[] cache4xy = new int[2];
     
     void readBipartiteGraph() {
 	// Läs antal hörn och kanter
 	int x = io.getInt();
 	int y = io.getInt();
+	cache4xy[0] = x;
+	cache4xy[1] = y;
 	//int sizeV = x + y;
 	int e = io.getInt();
 	
 	// Läs in kanterna
-	int[] a = new int[e]; //innehåller vänstra de
+	int[] a = new int[e];
 	int[] b = new int[e];
 	for (int i = 0; i < e; ++i) {
 	    a[i] = io.getInt();
 	    b[i] = io.getInt();
 	}
-	writeFlowGraph(x, y, e, a, b);
+	writeFlowGraph(e, a, b);
     }
     
     
-    void writeFlowGraph(int x, int y, int sizeE, int[] a, int[] b) {
+    void writeFlowGraph(int sizeE, int[] a, int[] b) {
+	int x = cache4xy[0], y = cache4xy[1];
 	int v = x + y + 2, e = sizeE, s = v - 1, t = v; 
 	
 	// Skriv ut antal hörn och kanter samt källa och sänka
@@ -63,6 +68,7 @@ public class BipRed {
 	
 	// Debugutskrift
 	System.err.println("Skickade iväg flödesgrafen");
+
     }
     
     
@@ -70,30 +76,47 @@ public class BipRed {
 	// Läs in antal hörn, kanter, källa, sänka, och totalt flöde
 	// (Antal hörn, källa och sänka borde vara samma som vi i grafen vi
 	// skickade iväg)
-	int v = io.getInt();
+	//int v = io.getInt();
+	io.getInt();
 	int s = io.getInt();
 	int t = io.getInt();
 	int totflow = io.getInt();
 	int e = io.getInt();
+
+	int[] a = new int[totflow];
+	int[] b = new int[totflow];
+	int index = 0;
 	
 	for (int i = 0; i < e; ++i) {
 	    // Flöde f från a till b
-	    int a = io.getInt();
-	    int b = io.getInt();
-	    int f = io.getInt();
+		int aTemp = io.getInt();
+		int bTemp = io.getInt();
+		io.getInt();
+
+		if(aTemp != s && bTemp != t){
+		a[index] = aTemp;
+	    b[index] = bTemp;
+		index++;
+		}                                                                  
 	}
+
+	//assertion
+	assert (index + 1) == totflow;
+
+
+	writeBipMatchSolution(totflow, a, b);
     }
     
     
-    void writeBipMatchSolution() {
-	int x = 17, y = 4711, maxMatch = 0;
-	
+    void writeBipMatchSolution(int sizeOfM, int[] l, int[] r) {
+
+	int x = cache4xy[0], y = cache4xy[1], maxMatch = sizeOfM;
 	// Skriv ut antal hörn och storleken på matchningen
 	io.println(x + " " + y);
 	io.println(maxMatch);
 	
 	for (int i = 0; i < maxMatch; ++i) {
-	    int a = 5, b = 2323;
+	    int a = l[i], b = r[i];
 	    // Kant mellan a och b ingår i vår matchningslösning
 	    io.println(a + " " + b);
 	}
@@ -107,7 +130,7 @@ public class BipRed {
 	
 	//writeFlowGraph();
 	
-	//readMaxFlowSolution();
+	readMaxFlowSolution();
 	
 	//writeBipMatchSolution();
 
