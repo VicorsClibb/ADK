@@ -163,11 +163,11 @@ public class BipMatch {
         int mf = maxFlow();
 
         io.println(cache4xy[0] + " " + cache4xy[1]);
-        io.println(antalKanter);
+        io.println(mf);
 
         for(int i = 0; i < e; i++){
             if(rkap[2*i+1] > 0){
-                io.print(a[i] + " " + b[i]);
+                io.println(a[i] + " " + b[i]);
             }
         }
     }
