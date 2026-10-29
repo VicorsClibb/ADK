@@ -44,44 +44,6 @@ public class Flow {
         }
     }
 
-    void updtFlowGraph(){
-        
-        int k = prev[t];
-        int n = ((k & 1) != 0) ? k - 1 : k + 1;
-
-        ArrayList<Integer> p = new ArrayList();
-        p.add(k);
-
-        while(till[n] != s){
-
-            int goBack = (till[n]);
-            p.add(prev[goBack]);
-            n = goBack;
-        }
-
-        int minRkap = Integer.MAX_VALUE;
-        for(int e: p){
-            
-            minRkap = Math.min(rkap[e], minRkap);
-        }
-
-        for(int e: p){
-            
-            if((e ^ 1) != 0){
-
-                rkap[e - 1] = rkap[e - 1] - minRkap; //i*2 indexet
-                rkap[e] = - rkap[e - 1];
-            }else{
-            
-                rkap[e] = rkap[e] - minRkap; //i*2 indexet
-                rkap[e + 1] = - rkap[e + 1];
-            }
-            
-        }
-
-
-    }
-
     boolean bfs(){
 
         prev = new int[v + 1];
@@ -107,21 +69,90 @@ public class Flow {
                     queue.add(nod);
 
                     prev[nod] = k;
+
+                    if(nod == t){
+                        return true;
+                    }
+
                 }
 
-                if(nod == t){
-                    return true;
-                }
+                
             }
         }
         return false;
     }
 
+    int updtFlowGraph(){
+        int k = prev[t];
+        int n = k ^ 1;
+
+        ArrayList<Integer> p = new ArrayList<>();
+        p.add(k);
+
+        while(till[n] != s){
+
+            int nod = (till[n]);
+
+            int prevKant = prev[nod];
+
+            p.add(prevKant);
+
+            n = prevKant ^ 1;
+        }
+
+        int minRkap = Integer.MAX_VALUE;
+
+        for(int kant: p){
+            minRkap = Math.min(rkap[kant], minRkap);
+        }
+
+        for(int kant: p){
+            rkap[kant] -= minRkap;
+            rkap[kant ^ 1] += minRkap;
+        }
+        return minRkap;
+    }
+
+    int maxFlow(){
+        int flöde = 0;
+
+        while(bfs()){
+            flöde += updtFlowGraph();
+        }
+        return flöde;
+    }
+
+    void writeFlow(){
+
+        int mf = maxFlow();
+
+        io.println(v);
+        io.println(s + " " + t + " " + mf);
+
+        int positivaKanter = 0;
+
+        for(int i = 0; i < e; i++){
+            if(rkap[2*i+1] > 0){
+                positivaKanter++;
+            }
+        }
+
+        io.println(positivaKanter);
+        for(int i = 0; i < e; i++){
+            if(rkap[2*i+1] > 0){
+                io.println(till[2*i+1] + " " + till[(i*2+1) ^ 1] + " " + rkap[2*i + 1]);
+            }
+        }
+    }
+
+
     Flow() {
 	io = new Kattio(System.in, System.out);
 
     readFlowGraph();
-
+    
+    writeFlow();
+    
 	// debugutskrift
 	System.err.println("Flow avslutar\n");
 
