@@ -7,6 +7,7 @@ public class Flow {
     int v, s, t, e;
     int[] till,rkap;
     int[] prev;
+    
 
     ArrayList<Integer> [] grannListor;
 
@@ -45,6 +46,40 @@ public class Flow {
 
     void updtFlowGraph(){
         
+        int k = prev[t];
+        int n = ((k & 1) != 0) ? k - 1 : k + 1;
+
+        ArrayList<Integer> p = new ArrayList();
+        p.add(k);
+
+        while(till[n] != s){
+
+            int goBack = (till[n]);
+            p.add(prev[goBack]);
+            n = goBack;
+        }
+
+        int minRkap = Integer.MAX_VALUE;
+        for(int e: p){
+            
+            minRkap = Math.min(rkap[e], minRkap);
+        }
+
+        for(int e: p){
+            
+            if((e ^ 1) != 0){
+
+                rkap[e - 1] = rkap[e - 1] - minRkap; //i*2 indexet
+                rkap[e] = - rkap[e - 1];
+            }else{
+            
+                rkap[e] = rkap[e] - minRkap; //i*2 indexet
+                rkap[e + 1] = - rkap[e + 1];
+            }
+            
+        }
+
+
     }
 
     boolean bfs(){
@@ -81,7 +116,7 @@ public class Flow {
         }
         return false;
     }
-    
+
     Flow() {
 	io = new Kattio(System.in, System.out);
 
