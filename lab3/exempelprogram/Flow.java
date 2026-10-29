@@ -1,9 +1,12 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Flow {
     Kattio io;
     int v, s, t, e;
     int[] till,rkap;
+    int[] prev;
 
     ArrayList<Integer> [] grannListor;
 
@@ -40,30 +43,45 @@ public class Flow {
         }
     }
 
-    updtFlowGraph(){
-        
-    }
-
-    int queue(){
+    void updtFlowGraph(){
         
     }
 
     boolean bfs(){
 
-        int[] prev = new int[v + 1];
+        prev = new int[v + 1];
 
         for(int i = 0; i < prev.length; i++){
             prev[i] = -1;
-        }
+        }        
+        Queue<Integer> queue = new LinkedList<>();
+
+        queue.add(s);
+
         prev[s] = -2;
 
+        while(!queue.isEmpty()){
 
+            int u = queue.poll();
 
+            for(int k: grannListor[u]){
 
+                int nod = till[k];
+
+                if(prev[nod] == -1 && rkap[k] > 0){
+                    queue.add(nod);
+
+                    prev[nod] = k;
+                }
+
+                if(nod == t){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
-
-
-
+    
     Flow() {
 	io = new Kattio(System.in, System.out);
 
