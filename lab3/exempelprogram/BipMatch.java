@@ -50,7 +50,7 @@ public class BipMatch {
         int x = cache4xy[0], y = cache4xy[1];
 
         v = x + y + 2;
-        s = v - 1; 
+        s = v - 1;
         t = v;
 
         grannListor = new ArrayList[v + 1];

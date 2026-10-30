@@ -110,6 +110,7 @@ public class Flow {
             rkap[kant] -= minRkap;
             rkap[kant ^ 1] += minRkap;
         }
+        
         return minRkap;
     }
 
@@ -152,7 +153,7 @@ public class Flow {
     readFlowGraph();
     
     writeFlow();
-    
+
 	// debugutskrift
 	System.err.println("Flow avslutar\n");
 
