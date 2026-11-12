@@ -33,7 +33,6 @@ public class Reduction{
             sceneList1[i] = temp_a;
             sceneList2[i] = temp_b;
 
-
             if (isolated.contains(temp_a)){
                 isolated.remove((Integer) temp_a);
             }
