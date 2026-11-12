@@ -4,26 +4,27 @@ import java.util.Iterator;
 
 public class Reduction{
 
-
-
-
     Kattio io;
     //int[] sceneList1;
     //int[] sceneList2;
     int role1 = 1;
     ArrayList<Integer> isolated = new ArrayList<Integer>();
 
-
     void readGraph(){
 
 
         int nrOfVertices = io.getInt();
+
         int nrOfEdges = io.getInt();
         int colorPalette = io.getInt();
+
         int[] sceneList1 = new int[nrOfEdges];
         int[] sceneList2 = new int[nrOfEdges];
        
 
+        for(int i = 1; i <= nrOfVertices; i++){
+            isolated.add(i);
+        }
 
         for(int i = 0; i < nrOfEdges; i++){
             int temp_a = io.getInt();
@@ -32,82 +33,67 @@ public class Reduction{
             sceneList2[i] = temp_b;
 
 
-            if (!isolated.contains(temp_a)){
-                isolated.add(temp_a);
-            }
-            if (!isolated.contains(temp_b)){
-                isolated.add(temp_b);
+            if (isolated.contains(temp_a)){
+                isolated.remove((Integer) temp_a);
             }
 
-
-        }
-
-
-        for(int i = 0; i < nrOfVertices; i++){
-            if(isolated.contains(i)){
-                isolated.remove(i); //kvar är de isolerade noderna.
+            if (isolated.contains(temp_b)){
+                isolated.remove((Integer) temp_b);
             }
         }
-
-
-
-
         writeRoleAssignmentProblem(nrOfVertices, nrOfEdges, colorPalette, sceneList1, sceneList2);
-
-
     }
 
-
-
-
     void writeRoleAssignmentProblem(int vertices, int edges, int colors, int[] sceneList1, int[] sceneList2){
-
-
         int nrRoles = vertices + 2;
         int nrScenes = edges + 2 + isolated.size();
-        int nrActors = colors + 2;
-        int updtColors = colors;
+        int totalActors = colors + 2;
+        int availableActors = colors; //tilldelade skådespelare = max färger
 
 
         io.println(nrRoles);
         io.println(nrScenes);
-        io.println(nrActors);
+        io.println(totalActors);
+
+        //Roller som kan besättas av skådespelare
+        for(int i = 1; i <= vertices; i++){
 
 
-        for(int i = 0; i < vertices; i++){
+            io.print(colors);
 
 
-            io.println(colors);
-
-
-            while(colors > 0){
-                io.println(updtColors - 1);
-                updtColors = updtColors - 1;
+            while(availableActors > 0){
+                io.print(" " + availableActors);
+                availableActors--;
             }
+            availableActors = colors;
+            io.println();
         }
-
-
+        
+        io.print(1 + " ");
         io.println(1);
-        io.println(colors + 1);
 
-
-        io.println(1);
-        io.println(colors + 2);
-         
-        for(int i = 0; i < edges; i++){
-            io.println(2);
-            io.println(sceneList1[i]);
-            io.println(sceneList2[i]);
-        }
-
-
+        io.print(1 + " ");
         io.println(2);
-        io.println(vertices + 1);
+
+        //Scener som kan spelas av roller         
+        for(int i = 0; i < edges; i++){
+            io.print(2);
+
+            int firstRoll = sceneList1[i] + 2;
+            int secondRoll = sceneList2[i] + 2;
+    
+            io.print(" " + firstRoll);
+            io.println(" " + secondRoll);
+        }
+
+        io.print(2 + " ");
+        io.print(1 + " ");
         io.println(role1);
 
 
-        io.println(2);
-        io.println(vertices + 2);
+        io.print(2 + " ");
+        io.print(2 + " ");
         io.println(role1);
 
 
@@ -115,12 +101,21 @@ public class Reduction{
 
 
         while(iterateIsolated.hasNext()){
-            io.println(2);
-            io.println(vertices + 1); //använder diva 1 som utfyllnad för alla isolerade noder.
-            io.println(iterateIsolated.next());
+            io.print(2);
+            io.print(" " + 1); //använder diva 1 som utfyllnad för alla isolerade noder.
+            io.println(" " + iterateIsolated.next());
         }
+    }
+    public static void main(String[] args) {
+        
 
+        Reduction reduction = new Reduction();
 
+        reduction.io = new Kattio(System.in, System.out);
+
+        reduction.readGraph();
+
+        reduction.io.close();
 
 
     }
